@@ -1,0 +1,11 @@
+[user]
+	name = xiang
+	email = xian.g@outlook.com
+[init]
+	defaultBranch = main
+[core]
+	editor = nvim
+[color]
+	ui = auto
+[alias]
+	lg = log --oneline --graph --decorate

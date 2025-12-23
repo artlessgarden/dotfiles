@@ -1,0 +1,79 @@
+{
+  "policies": {
+    "PasswordManagerEnabled": false,
+    "DisableAppUpdate": true,
+    "DisableFeedbackCommands": true,
+    "DisableFirefoxAccounts": true,
+    "DisableFirefoxScreenshots": true,
+    "DisableFirefoxStudies": true,
+    "DisableForgetButton": true,
+    "DisablePocket": true,
+    "DisablePrivateBrowsing": true,
+    "DisableProfileImport": true,
+    "DisableSafeMode": true,
+    "DisableSetDesktopBackground": true,
+    "DisableTelemetry": true,
+    "DisplayBookmarksToolbar": "never",
+    "DisplayMenuBar": "never",
+    "DisableFirefoxView": true,
+    "ExtensionSettings": {
+      "*": {
+        "temporarily_allow_weak_signatures": true
+      }
+    },
+    "Extensions": {
+      "Install": [
+          "https://addons.mozilla.org/firefox/downloads/file/4458450/latest.xpi",
+          "https://addons.mozilla.org/firefox/downloads/file/4455138/latest.xpi",
+	  "https://addons.mozilla.org/firefox/downloads/file/3939068/latest.xpi",
+	  "https://addons.mozilla.org/firefox/downloads/file/4439735/latest.xpi",
+	  "https://addons.mozilla.org/firefox/downloads/file/4286113/latest.xpi",
+	  "https://addons.mozilla.org/firefox/downloads/file/4394007/latest.xpi",
+	  "https://addons.mozilla.org/firefox/downloads/file/3756025/latest.xpi",
+	  "https://addons.mozilla.org/firefox/downloads/file/4472856/latest.xpi",
+	  "https://addons.mozilla.org/firefox/downloads/file/4460303/latest.xpi"
+      ]
+    },
+
+
+
+    "Homepage": {
+      "Locked": true,
+      "StartPage": "none"
+    },
+    "PDFjs": {
+      "Enabled": false
+    },
+    "Permissions": {
+      "Autoplay": {
+        "Default": "allow-audio-video"
+      }
+    },
+    "NoDefaultBookmarks": true,
+    "PictureInPicture": {
+      "Enabled": false,
+      "Locked": true
+    },
+    "Preferences": {
+      "extensions.getAddons.showPane": {
+        "Status": "locked",
+        "Type": "boolean",
+        "Value": false
+      },
+      "security.ssl.errorReporting.enabled": {
+        "Status": "locked",
+        "Type": "boolean",
+        "Value": false
+      }
+    },
+    "ShowHomeButton": false,
+    "UserMessaging": {
+      "ExtensionRecommendations": false,
+      "FeatureRecommendations": false,
+      "Locked": true,
+      "MoreFromMozilla": false,
+      "SkipOnboarding": true,
+      "WhatsNew": false
+    }
+  }
+}

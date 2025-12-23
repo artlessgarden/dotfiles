@@ -1,0 +1,9 @@
+[Unit]
+Description=mouseless
+
+[Service]
+ExecStartPre=/bin/sleep 2
+ExecStart=/usr/bin/mouseless --config ~/.config/config.yaml
+
+[Install]
+WantedBy=multi-user.target
