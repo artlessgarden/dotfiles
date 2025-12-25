@@ -14,11 +14,12 @@ layout {
     background-color "transparent"
   }
 gestures { hot-corners { off; };}
-//animations { off ;}
+animations { off ;}
 
 output "HDMI-A-1" {
-    mode "1920x1080@100"
+    scale 2
     focus-at-startup
+    mode "3840x2160@59.940"
     }
 
 output "eDP-1" {
@@ -92,7 +93,10 @@ Mod+f repeat=false { spawn "firefox"; }
 Mod+x repeat=false { spawn "chromium"; }
 Mod+z repeat=false { spawn "mihomo-party";}
 Mod+p repeat=false { screenshot-screen; }
-Mod+q repeat=false { screenshot; }
+Mod+q repeat=false {
+  spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -"
+}
+//Mod+q repeat=false { screenshot; }
 Mod+c repeat=false {toggle-overview;}
 Mod+w repeat=false { close-window; }
 Mod+Shift+w { quit; }
