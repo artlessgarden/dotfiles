@@ -236,8 +236,75 @@
 (use-package magit
   :bind (("C-x g" . magit-status)))
 
-(add-hook 'typescript-ts-mode-hook 'eglot-ensure)
-(add-hook 'tsx-ts-mode-hook 'eglot-ensure)
+
+(use-package idle-highlight-mode
+  :config (setq idle-highlight-idle-time 0.2)
+  :hook ((prog-mode text-mode) . idle-highlight-mode))
+
+
+;; --- 1. 语法高亮 (Treesitter) ---
+;; 自动安装和使用 Treesitter 模式，不用手动一个个映射
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt) ;; 首次遇到新语言询问是否安装语法包
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
+;; --- 2. LSP (Eglot) ---
+;; Emacs 29 内置，零配置，只需 hook 启动
+(use-package eglot
+  :hook 
+  ;; 进入这些模式时自动启动 LSP
+  ((js-ts-mode . eglot-ensure)
+   (tsx-ts-mode . eglot-ensure)
+   (typescript-ts-mode . eglot-ensure)
+   (html-mode . eglot-ensure)
+   (css-mode . eglot-ensure))
+  :config
+  ;; 性能优化：关掉 LSP 的事件记录 buffer，防止卡顿
+  (setq eglot-events-buffer-size 0))
+
+;; --- 3. 多行编辑 (Multiple Cursors) ---
+;; 类似 VSCode 的 Ctrl+D
+(use-package multiple-cursors
+  :bind
+  (("C->" . mc/mark-next-like-this)       ;; 选中下一个同名词
+   ("C-<" . mc/mark-previous-like-this)   ;; 选中上一个
+   ("C-c C-<" . mc/edit-lines)))          ;; 每行行首添加光标
+
+;; --- 4. 补全界面 (Corfu) ---
+(use-package corfu
+  :init
+  (global-corfu-mode) ;; 全局开启
+  :custom
+  (corfu-auto t)                 ;; 自动弹出，不用按键
+  (corfu-cycle t)                ;; 列表循环
+  (corfu-quit-no-match 'separator) ;; 没匹配时自动退出，不挡视线
+  (corfu-preselect 'prompt)      ;; 默认选中第一项
+  :bind
+  (:map corfu-map
+        ("TAB" . corfu-next)     ;; TAB 往下选 (习惯问题，可选)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous)))
+
+;; 优化 Minibuffer (命令栏) 的补全体验，和 Corfu 是一套的
+(use-package vertico
+  :init
+  (vertico-mode))
+
+;; --- 5. 自动格式化 (Apheleia) ---
+(use-package apheleia
+  :hook (after-init . apheleia-global-mode) ;; 全局开启
+  :config
+  ;; 针对 Web 开发，强制使用 Prettier
+  ;; Apheleia 聪明在它会找项目里的 node_modules/.bin/prettier
+  ;; 如果找不到，就用系统的 prettier
+  (setf (alist-get 'prettier apheleia-formatters)
+        '("prettier" "--stdin-filepath" filepath)))
+
+
 
 
 

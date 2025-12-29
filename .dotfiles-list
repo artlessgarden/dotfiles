@@ -23,8 +23,6 @@ policies.json
 .config/no_cache_server.py
 .config/chromium-flags.conf
 .config/surfingkeys.js
-.config/systemd/user/wallpaper-minute.timer
-.config/systemd/user/wallpaper-minute.service
 
 .local/share/fcitx5/data/QuickPhrase.mb
 

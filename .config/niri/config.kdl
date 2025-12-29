@@ -14,22 +14,17 @@ layout {
     background-color "transparent"
   }
 gestures { hot-corners { off; };}
-animations { off ;}
+//animations { off ;}
 
 output "HDMI-A-1" {
-    scale 1.25
+    scale 1
     focus-at-startup
-    mode "1920x1080@100"
-    }
-output "HDMI-A-2" {
-    scale 2
-    focus-at-startup
-    mode "3840x2160@59.940"
+    mode "1920x1080@100.000"
     }
 
 output "eDP-1" {
     off
-    scale 1.75
+    scale 1.5
     position x=0 y=0
     }
 
