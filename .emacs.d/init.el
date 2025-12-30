@@ -27,16 +27,16 @@
 (load-theme 'wombat t)
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (setq auto-save-visited-interval 1) ; 先设定
-  (auto-save-visited-mode 1) ; 再打开
-(setq scroll-conservatively 101)   ;; 光标靠近边界才滚动
-(setq scroll-margin 2)             ;; 顶部/底部预留2行
-(setq scroll-step 1)               ;; 每次滚动一行
+(auto-save-visited-mode 1) ; 再打开
+(setq scroll-conservatively 101)   ; 光标靠近边界才滚动
+(setq scroll-margin 2)             ; 顶部/底部预留2行
+(setq scroll-step 1)               ; 每次滚动一行
 (setq redisplay-dont-pause t)
 (electric-pair-mode t)
 ;; (show-paren-mode 1)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
-;(global-display-line-numbers-mode)
+;; (global-display-line-numbers-mode)
 (save-place-mode t)
 (savehist-mode t)
 (recentf-mode t)
@@ -59,8 +59,8 @@
   :custom
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
-;(icomplete-vertical-mode t)
-;(fido-vertical-mode 1)
+;;(icomplete-vertical-mode t)
+;;(fido-vertical-mode 1)
 ;; (setq completion-styles '(initials flex substring))
 ;; (setq completion-category-overrides
 ;;       '((file (styles partial-completion))))
@@ -85,15 +85,16 @@
 (setq org-hide-leading-stars t)
 (add-hook 'org-mode-hook #'org-indent-mode)
 
-
+(which-key-mode 1)
 ;;; manual package
-(require 'vv-mode)
-(require 'my-package)
+;; (require 'vv-mode)
 
-; package init
+;; package init
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
- ;(unless package-archive-contents
- ;  (package-refresh-contents))
+;;(unless package-archive-contents
+;;  (package-refresh-contents))
 (require 'use-package-ensure)
-  (setq use-package-always-ensure t)
+(setq use-package-always-ensure t)
+
+(require 'my-package)

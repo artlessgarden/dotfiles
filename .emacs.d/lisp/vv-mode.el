@@ -9,9 +9,9 @@
 
 (defun vv-to-normal ()
   (interactive)
-    (setq cursor-type 'box)
-    (vv-normal-mode 1)
-    (vv-insert-mode -1))
+  (setq cursor-type 'box)
+  (vv-normal-mode 1)
+  (vv-insert-mode -1))
 
 (defun vv-to-insert ()
   (interactive)
@@ -56,7 +56,7 @@
         (set-mark start)
         (goto-char end)
         (activate-mark))
-  ;; 非持续选择模式时的行为，留空给你
+    ;; 非持续选择模式时的行为，留空给你
     (let ((start (point)))
       (forward-word 1)
       (set-mark start)
@@ -77,7 +77,7 @@
         (set-mark start)
         (goto-char end)
         (activate-mark))
-  ;; 非持续选择模式时的行为，留空给你
+    ;; 非持续选择模式时的行为，留空给你
     (let ((start (point)))
       (backward-word 1)
       (set-mark start)
@@ -106,11 +106,11 @@
 (defun vv-next-line ()
   (interactive)
   (if vv-w-state
-     (let ((start (region-beginning))
-        (end (region-end)))
+      (let ((start (region-beginning))
+            (end (region-end)))
         ;; 保存历史，供 W 撤销
         (push (cons start end) vv-w-history)
-      (next-line 1))
+        (next-line 1))
     (progn
       (setq vv-w-state nil)
       (set-face-background 'cursor "orange") ;; 或你平常用的颜色
@@ -119,11 +119,11 @@
 (defun vv-previous-line ()
   (interactive)
   (if vv-w-state
-     (let ((start (region-beginning))
-        (end (region-end)))
+      (let ((start (region-beginning))
+            (end (region-end)))
         ;; 保存历史，供 W 撤销
         (push (cons start end) vv-w-history)
-      (previous-line 1))
+        (previous-line 1))
     (progn
       (setq vv-w-state nil)
       (set-face-background 'cursor "orange") ;; 或你平常用的颜色
@@ -132,11 +132,11 @@
 (defun vv-backward-char ()
   (interactive)
   (if vv-w-state
-     (let ((start (region-beginning))
-        (end (region-end)))
+      (let ((start (region-beginning))
+            (end (region-end)))
         ;; 保存历史，供 W 撤销
         (push (cons start end) vv-w-history)
-      (backward-char 1))
+        (backward-char 1))
     (progn
       (setq vv-w-state nil)
       (set-face-background 'cursor "orange") ;; 或你平常用的颜色
@@ -145,11 +145,11 @@
 (defun vv-forward-char ()
   (interactive)
   (if vv-w-state
-     (let ((start (region-beginning))
-        (end (region-end)))
+      (let ((start (region-beginning))
+            (end (region-end)))
         ;; 保存历史，供 W 撤销
         (push (cons start end) vv-w-history)
-      (forward-char 1))
+        (forward-char 1))
     (progn
       (setq vv-w-state nil)
       (set-face-background 'cursor "orange") ;; 或你平常用的颜色
@@ -238,38 +238,38 @@
    ;; 1. 无选区，或 mark 在前，或 point 和 mark 重合 => 向下扩展
    ((or (not (use-region-p))
         (< (mark) (point)))
-  (if (and (use-region-p)
-           (save-excursion
-             (goto-char (region-beginning))
-             (bolp)))
+    (if (and (use-region-p)
+             (save-excursion
+               (goto-char (region-beginning))
+               (bolp)))
+        (progn
+                                        ;        (beginning-of-line)
+          (next-line)
+          )
       (progn
-;        (beginning-of-line)
+        (beginning-of-line)
+        (set-mark (point))
         (next-line)
-        )
-    (progn
-      (beginning-of-line)
-      (set-mark (point))
-      (next-line)
-      (activate-mark))))
+        (activate-mark))))
 
    ;; 2. 如果 point 在前 => 向上扩展
    (t
-  (if (save-excursion
-        (goto-char (region-beginning))
+    (if (save-excursion
+          (goto-char (region-beginning))
           (bolp))
-    (progn
-;      (end-of-line)
-;      (set-mark (point))
-      (forward-line -1)
-;      (activate-mark))
-    )
-    (progn
-      (beginning-of-line)
-      (next-line)
-      (set-mark (point))
-      (previous-line))
-    )
-  )))
+        (progn
+                                        ;      (end-of-line)
+                                        ;      (set-mark (point))
+          (forward-line -1)
+                                        ;      (activate-mark))
+          )
+      (progn
+        (beginning-of-line)
+        (next-line)
+        (set-mark (point))
+        (previous-line))
+      )
+    )))
 
 (define-key vv-normal-map (kbd "x") 'vv-select-line)
 
@@ -325,11 +325,11 @@
 (defun vv-buffer-begin ()
   (interactive)
   (if vv-w-state
-     (let ((start (region-beginning))
-        (end (region-end)))
+      (let ((start (region-beginning))
+            (end (region-end)))
         ;; 保存历史，供 W 撤销
         (push (cons start end) vv-w-history)
-      (beginning-of-buffer))
+        (beginning-of-buffer))
     (let ((start (point)))
       (set-mark start)
       (beginning-of-buffer)
@@ -337,11 +337,11 @@
 (defun vv-buffer-end ()
   (interactive)
   (if vv-w-state
-     (let ((start (region-beginning))
-        (end (region-end)))
+      (let ((start (region-beginning))
+            (end (region-end)))
         ;; 保存历史，供 W 撤销
         (push (cons start end) vv-w-history)
-      (end-of-buffer))
+        (end-of-buffer))
     (let ((start (point)))
       (set-mark start)
       (end-of-buffer)
@@ -352,11 +352,11 @@
 (defun vv-line-begin ()
   (interactive)
   (if vv-w-state
-     (let ((start (region-beginning))
-        (end (region-end)))
+      (let ((start (region-beginning))
+            (end (region-end)))
         ;; 保存历史，供 W 撤销
         (push (cons start end) vv-w-history)
-      (beginning-of-line))
+        (beginning-of-line))
     (let ((start (point)))
       (set-mark start)
       (beginning-of-line)
@@ -364,11 +364,11 @@
 (defun vv-line-end ()
   (interactive)
   (if vv-w-state
-     (let ((start (region-beginning))
-        (end (region-end)))
+      (let ((start (region-beginning))
+            (end (region-end)))
         ;; 保存历史，供 W 撤销
         (push (cons start end) vv-w-history)
-      (end-of-line))
+        (end-of-line))
     (let ((start (point)))
       (set-mark start)
       (end-of-line)
@@ -450,14 +450,14 @@
 (defun vv-avy-char-time-expand ()
   (interactive)
   (if vv-w-state
-     (let ((start (region-beginning))
-        (end (region-end)))
+      (let ((start (region-beginning))
+            (end (region-end)))
         ;; 保存历史，供 W 撤销
         (push (cons start end) vv-w-history)
-      (avy-goto-char-timer))
+        (avy-goto-char-timer))
     (let ((start (point)))
       (set-mark start)
-      ;(avy-goto-char-timer)
+                                        ;(avy-goto-char-timer)
       (ace-pinyin-jump-word)
       (activate-mark))))
 (define-key vv-normal-map (kbd "f") 'vv-avy-char-time-expand)

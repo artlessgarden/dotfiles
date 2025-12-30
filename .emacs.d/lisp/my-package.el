@@ -100,7 +100,7 @@
   ;; Optionally make narrowing help available in the minibuffer.
   ;; You may want to use `embark-prefix-help-command' or which-key instead.
   ;; (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help)
-)
+  )
 
 
 ;; Enable Vertico.
@@ -151,7 +151,7 @@
   ;; available in the *Completions* buffer, add it to the
   ;; `completion-list-mode-map'.
   :bind (:map minibuffer-local-map
-         ("M-A" . marginalia-cycle))
+              ("M-A" . marginalia-cycle))
 
   ;; The :init section is always executed.
   :init
@@ -169,7 +169,7 @@
   ("C-c l c" . link-hint-copy-link)
   :config
   (setq browse-url-generic-args '("--target" "window"))
-)
+  )
 
 
 ;; (use-package sis
@@ -222,13 +222,13 @@
 ;;; org package
 
 (use-package org-appear
- :commands (org-appear-mode)
- :hook     (org-mode . org-appear-mode)
- :config
- (setq org-hide-emphasis-markers t)  ; Must be activated for org-appear to work
- (setq org-appear-autoemphasis   t   ; Show bold, italics, verbatim, etc.
-       org-appear-autolinks      t   ; Show links
-	org-appear-autosubmarkers t)) ; Show sub- and superscripts
+  :commands (org-appear-mode)
+  :hook     (org-mode . org-appear-mode)
+  :config
+  (setq org-hide-emphasis-markers t)  ; Must be activated for org-appear to work
+  (setq org-appear-autoemphasis   t   ; Show bold, italics, verbatim, etc.
+        org-appear-autolinks      t   ; Show links
+	    org-appear-autosubmarkers t)) ; Show sub- and superscripts
 
 ;; (use-package cnfonts
 ;;  :config (cnfonts-mode))
