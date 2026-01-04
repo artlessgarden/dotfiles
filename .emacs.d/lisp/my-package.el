@@ -305,7 +305,22 @@
         '("prettier" "--stdin-filepath" filepath)))
 
 
+(use-package embark
+  :config (global-set-key (kbd "M-b") 'embark-act)
+  )
 
+(use-package ace-pinyin)
+(use-package avy-zp)
+(defun orderless-regexp-pinyin (str)
+  (setf (car str) (pinyinlib-build-regexp-string (car str)))
+  str)
+(advice-add 'orderless-regexp :filter-args #'orderless-regexp-pinyin)
+
+;; (use-package telega
+;;   :config
+;;   (setq telega-server-libs-prefix "/usr")
+;;   (setq telega-use-images t)
+;;   )
 
 
 (provide 'my-package)

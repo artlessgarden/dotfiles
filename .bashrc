@@ -6,6 +6,7 @@
 [[ $- != *i* ]] && return
 
 
+########################################################################################################
 function parse_git_branch() {
   branch=$(git symbolic-ref --short HEAD 2>/dev/null) || return
   dirty=$(git status --porcelain 2>/dev/null)
@@ -13,15 +14,24 @@ function parse_git_branch() {
 }
 PS1='\n\[\e[38;5;223;48;5;238m\]\A \W\[\e[38;5;218m\]$(parse_git_branch)\[\e[0m\] '
 
+
+########################################################################################################
 # Use bash-completion, if available
 [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
     . /usr/share/bash-completion/bash_completion
 
+export QT_QPA_PLATFORM=wayland
+export PATH="$HOME/.local/bin:$PATH"
+
+
+########################################################################################################
 # Set up fzf key bindings and fuzzy completion
 eval "$(fzf --bash)"
 export FZF_COMPLETION_OPTS='--info=inline'
 export FZF_DEFAULT_OPTS='--bind "ctrl-y:execute-silent(printf {} | cut -f 2- | wl-copy --trim-newline)"'
 
+
+########################################################################################################
 pacr() {
     local pkg logline timestamp_str ts formatted
     # 生成“首次安装时间戳<TAB>包名”的列表
@@ -52,11 +62,13 @@ pacr() {
     awk -F'\t' '{print $2}' | xargs -ro sudo pacman -Rns
 }
 
+########################################################################################################
 # cd
 shopt -s autocd
 set -o noclobber
 shopt -s checkwinsize
 
+########################################################################################################
 alias l='ls -Alh'
 alias pacs='pacman --color always -Sl | sed -e "s: :/:; /installed/d" | cut -f 1 -d " " | fzf --multi --ansi --preview "pacman -Si {1}" | xargs -ro sudo pacman -S'
 alias pars='paru --color always -Sl | sed -e "s: :/:; /installed/d" | cut -f 1 -d " " | fzf --multi --ansi --preview "paru -Si {1}" | xargs -ro paru -S'
@@ -66,6 +78,7 @@ alias pacu="sudo pacman -Syu"
 alias gl='git clone --depth=1'
     
 alias dot='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
 dotadd () {
   cd "$HOME" || return 1
 
@@ -98,7 +111,7 @@ dotadd () {
   dot status
 }
 
-
+    
 paca() {
     expac -S "%-30n %d" | \
     fzf --multi --preview 'pacman -Si {1}' --layout=reverse --prompt='> ' | \
@@ -106,22 +119,38 @@ paca() {
     xargs -ro sudo pacman -S
 }
 
+
+########################################################################################################
+EDITOR="emacsclient -t"
 # ~/.bashrc 增强 bash 历史记录
 # 1. 保留更多历史
 HISTSIZE=10000000            # 当前 session 保留的命令数
 HISTFILESIZE=20000000        # 写入 ~/.bash_history 的命令数
+
 # 2. 清理重复，提升搜索可读性
 HISTCONTROL=ignoredups:erasedups
-HISTIGNORE="&:ls:[bf]g:exit:clear"   # 忽略重复、常用无意义命令
+HISTIGNORE="&:ls:[bf]g:exit:clear:pacu:pacs:pacr:paco:pacq:paca"   # 忽略重复、常用无意义命令
+
 # 3. 添加时间戳（便于溯源）
 HISTTIMEFORMAT="%F %T "
+#HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S  '
+# __fzf_hist_with_time() {
+#   # history 输出类似：  123  2026-01-04 11:02:33  curl ...
+#   history | fzf --tac --no-sort
+
+# }
+# bind -x '"\C-r": "__fzf_hist_with_time"'
+
 # 4. 支持多行命令记录
 shopt -s cmdhist
+
 # 5. 追加历史，不覆盖
 shopt -s histappend
-# 6. 每次命令执行后保存历史（跨终端实时同步）
 
+PROMPT_COMMAND='history -a; history -n'
+shopt -s lithist
 
+########################################################################################################
 # --- foot: 上一条命令“输出区间”的 C/D 标记（Bash） ---
 # 1) 每条命令开始前，发“输出开始”标记（用 PS0；注意 $'...' 让 \e 变 ESC）
 PS0+=$'\e]133;C\e\\'
@@ -141,8 +170,9 @@ fi
 
 
 
-export QT_QPA_PLATFORM=wayland
-export PATH="$HOME/.local/bin:$PATH"
+
+
+########################################################################################################
 
 [ "$(tty)" = "/dev/tty1" ] && exec niri-session
 

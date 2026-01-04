@@ -93,9 +93,7 @@ Mod+f repeat=false { spawn "firefox"; }
 Mod+x repeat=false { spawn "chromium"; }
 Mod+z repeat=false { spawn "mihomo-party";}
 Mod+p repeat=false { screenshot-screen; }
-Mod+q repeat=false {
-  spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -"
-}
+Mod+q repeat=false { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy --type image/png && wl-paste --type image/png | swappy -f -"; }
 //Mod+q repeat=false { screenshot; }
 Mod+c repeat=false {toggle-overview;}
 Mod+w repeat=false { close-window; }
