@@ -1,0 +1,241 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REMOTE='googledrive:'
+DEST="$HOME/googledrive-local"
+TEXT_INDEX="$DEST/.search-text"
+MAP_FILE="$TEXT_INDEX/.drive-map.tsv"
+
+mkdir -p "$DEST" "$TEXT_INDEX"
+
+rclone sync "$REMOTE" "$DEST" \
+  --fast-list \
+  --create-empty-src-dirs \
+  --drive-export-formats docx,xlsx,pptx \
+  --filter '+ *.txt' \
+  --filter '+ *.md' \
+  --filter '+ *.markdown' \
+  --filter '+ *.csv' \
+  --filter '+ *.tsv' \
+  --filter '+ *.log' \
+  --filter '+ *.conf' \
+  --filter '+ *.ini' \
+  --filter '+ *.yaml' \
+  --filter '+ *.yml' \
+  --filter '+ *.json' \
+  --filter '+ *.env' \
+  --filter '+ *.docx' \
+  --filter '+ *.xlsx' \
+  --filter '+ *.pptx' \
+  --filter '- *'
+
+python3 - <<'PY'
+from pathlib import Path
+import zipfile
+import xml.etree.ElementTree as ET
+import re
+
+dest = Path.home() / "googledrive-local"
+out_root = dest / ".search-text"
+out_root.mkdir(parents=True, exist_ok=True)
+
+NS = {
+    "w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+}
+
+TEXT_SUFFIXES = {
+    ".txt", ".md", ".markdown", ".csv", ".tsv", ".log",
+    ".conf", ".ini", ".yaml", ".yml", ".json", ".env"
+}
+OFFICE_SUFFIXES = {".docx", ".xlsx", ".pptx"}
+ALL_SUFFIXES = TEXT_SUFFIXES | OFFICE_SUFFIXES
+
+def clean_text(s: str) -> str:
+    s = s.replace("\r", "")
+    s = re.sub(r"\n{3,}", "\n\n", s)
+    s = s.strip()
+    return s + "\n" if s else ""
+
+def sidecar_path(src: Path) -> Path:
+    rel = src.relative_to(dest)
+    target = out_root / rel
+    return target.with_suffix(target.suffix + ".txt")
+
+def error_path(src: Path) -> Path:
+    return sidecar_path(src).with_suffix(sidecar_path(src).suffix + ".error.txt")
+
+def needs_reindex(src: Path) -> bool:
+    target = sidecar_path(src)
+    if not target.exists():
+        return True
+    try:
+        return src.stat().st_mtime > target.stat().st_mtime
+    except FileNotFoundError:
+        return True
+
+def write_sidecar(src: Path, text: str):
+    target = sidecar_path(src)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(clean_text(text), encoding="utf-8")
+    err = error_path(src)
+    if err.exists():
+        err.unlink()
+
+def extract_docx(path: Path) -> str:
+    texts = []
+    with zipfile.ZipFile(path) as z:
+        with z.open("word/document.xml") as f:
+            root = ET.parse(f).getroot()
+        for para in root.findall(".//w:p", NS):
+            runs = [t.text or "" for t in para.findall(".//w:t", NS)]
+            line = "".join(runs).strip()
+            if line:
+                texts.append(line)
+    return "\n".join(texts)
+
+def extract_xlsx(path: Path) -> str:
+    with zipfile.ZipFile(path) as z:
+        shared = []
+        if "xl/sharedStrings.xml" in z.namelist():
+            with z.open("xl/sharedStrings.xml") as f:
+                root = ET.parse(f).getroot()
+                for si in root:
+                    shared.append("".join(
+                        t.text or "" for t in si.iter() if t.tag.endswith("}t")
+                    ))
+
+        rows_out = []
+        sheet_names = sorted(
+            n for n in z.namelist()
+            if n.startswith("xl/worksheets/sheet") and n.endswith(".xml")
+        )
+
+        for name in sheet_names:
+            with z.open(name) as f:
+                root = ET.parse(f).getroot()
+            rows_out.append(f"## {Path(name).stem}")
+            for row in root.iter():
+                if not row.tag.endswith("}row"):
+                    continue
+                vals = []
+                for c in row:
+                    if not c.tag.endswith("}c"):
+                        continue
+                    cell_type = c.attrib.get("t")
+                    v = None
+                    for child in c:
+                        if child.tag.endswith("}v") and child.text is not None:
+                            v = child.text
+                            break
+                    if v is None:
+                        vals.append("")
+                    elif cell_type == "s":
+                        idx = int(v)
+                        vals.append(shared[idx] if idx < len(shared) else v)
+                    else:
+                        vals.append(v)
+                line = "\t".join(vals).rstrip()
+                if line:
+                    rows_out.append(line)
+            rows_out.append("")
+        return "\n".join(rows_out)
+
+def extract_pptx(path: Path) -> str:
+    lines = []
+    with zipfile.ZipFile(path) as z:
+        slide_names = sorted(
+            n for n in z.namelist()
+            if n.startswith("ppt/slides/slide") and n.endswith(".xml")
+        )
+        for i, name in enumerate(slide_names, 1):
+            with z.open(name) as f:
+                root = ET.parse(f).getroot()
+            texts = [t.text or "" for t in root.iter() if t.tag.endswith("}t")]
+            texts = [t.strip() for t in texts if t and t.strip()]
+            if texts:
+                lines.append(f"## slide {i}")
+                lines.extend(texts)
+                lines.append("")
+        return "\n".join(lines)
+
+for p in dest.rglob("*"):
+    if not p.is_file():
+        continue
+    if ".search-text" in p.parts:
+        continue
+
+    suffix = p.suffix.lower()
+    if suffix not in ALL_SUFFIXES:
+        continue
+
+    if not needs_reindex(p):
+        continue
+
+    try:
+        if suffix in TEXT_SUFFIXES:
+            text = p.read_text(encoding="utf-8", errors="ignore")
+            write_sidecar(p, text)
+        elif suffix == ".docx":
+            write_sidecar(p, extract_docx(p))
+        elif suffix == ".xlsx":
+            write_sidecar(p, extract_xlsx(p))
+        elif suffix == ".pptx":
+            write_sidecar(p, extract_pptx(p))
+    except Exception as e:
+        err = error_path(p)
+        err.parent.mkdir(parents=True, exist_ok=True)
+        err.write_text(f"{p}\n{e}\n", encoding="utf-8")
+
+# 清理已不存在源文件对应的索引
+for idx in out_root.rglob("*"):
+    if not idx.is_file():
+        continue
+    if idx.name == ".drive-map.tsv":
+        continue
+    if idx.name.endswith(".error.txt"):
+        rel = idx.relative_to(out_root)
+        src = dest / str(rel).removesuffix(".txt.error.txt")
+    else:
+        rel = idx.relative_to(out_root)
+        src = dest / str(rel).removesuffix(".txt")
+
+    if not src.exists():
+        idx.unlink()
+
+# 清理空目录
+for d in sorted(out_root.rglob("*"), reverse=True):
+    if d.is_dir():
+        try:
+            d.rmdir()
+        except OSError:
+            pass
+PY
+
+tmp_map="$(mktemp)"
+rclone lsjson -R "$REMOTE" --files-only \
+| python3 -c '
+import json, sys
+
+EXPORTABLE = {
+    "application/vnd.google-apps.document": ".docx",
+    "application/vnd.google-apps.spreadsheet": ".xlsx",
+    "application/vnd.google-apps.presentation": ".pptx",
+}
+
+data = json.load(sys.stdin)
+
+for obj in data:
+    path = obj.get("Path", "")
+    fid = obj.get("ID", "")
+    mime = obj.get("MimeType", "")
+
+    if not path or not fid:
+        continue
+
+    if mime in EXPORTABLE:
+        path = path + EXPORTABLE[mime]
+
+    print(f"{path}\t{fid}")
+' > "$tmp_map"
+
+mv "$tmp_map" "$MAP_FILE"

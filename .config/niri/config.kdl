@@ -1,0 +1,155 @@
+input {
+    keyboard { repeat-delay 200; repeat-rate 30; }
+    touchpad { tap; dwt; dwtp; natural-scroll; }
+    focus-follows-mouse max-scroll-amount="0%"
+   // warp-mouse-to-focus
+    workspace-auto-back-and-forth
+}
+layout {
+    gaps 4
+    preset-column-widths { proportion 0.382; proportion 0.618;proportion 1.0; }
+    default-column-width { proportion 0.618; }
+    always-center-single-column
+
+    focus-ring {
+        // off
+        on
+        width 2
+        active-color "wheat"
+        inactive-color "#505050"
+        urgent-color "#9b0000"
+        // active-gradient from="#80c8ff" to="#bbddff" angle=45
+        // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
+        // urgent-gradient from="#800" to="#a33" angle=45
+    }
+
+    background-color "transparent"
+    struts {
+        left 16
+        right 16
+        top 16
+        bottom 16
+    }
+    insert-hint {
+        // off
+        color "#ffc87f80"
+        gradient from="#ffbb6680" to="#ffc88080" angle=45 relative-to="workspace-view"
+    }
+  }
+gestures { hot-corners { off; };}
+animations { off ;}
+output "eDP-1" {
+        scale 1.75;
+        off
+}
+output "DP-1" {
+        scale 1.25
+        mode "2560x1440@60.011"
+        position x=0 y=0
+        focus-at-startup
+        // mode "3840x2160@59.940"
+    // mode "3840x2160@30.000"
+}
+
+// Make the wallpaper stationary, rather than moving with workspaces.
+
+layer-rule {
+    // This is for swaybg; change for other wallpaper tools.
+    // Find the right namespace by running niri msg layers.
+    match namespace="^wallpaper$"
+    place-within-backdrop true
+}
+recent-windows {
+    // off
+    debounce-ms 750
+    open-delay-ms 500
+    highlight {
+        active-color "wheat"
+        urgent-color "#ff999900"
+        padding 0
+        corner-radius 0
+    }
+    previews {
+        max-height 800
+        max-scale 0.8
+    }
+    binds {
+        Mod+m         { next-window; }
+        Mod+n         { previous-window; }
+        Mod+alt+m       { next-window     filter="app-id"; }
+        Mod+alt+n { previous-window filter="app-id"; }
+    }
+}
+
+prefer-no-csd
+hotkey-overlay { skip-at-startup; }
+//cursor { hide-when-typing; hide-after-inactive-ms 5000; }
+screenshot-path null
+// window-rule { match is-focused=true; opacity 0.95; }
+// window-rule { match is-focused=false; opacity 0.8; }
+window-rule { open-floating false; }
+
+spawn-at-startup "sh" "-c" "fcitx5 -d"
+spawn-at-startup "sh" "-c" "swaybg -m fill -i ~/.config/niri/bg.jpg"
+spawn-at-startup "foot"
+spawn-at-startup "mouseless"
+spawn-at-startup "sh" "-c" "wlsunset -l 29.5 -L 116"
+spawn-at-startup "sh" "-c" "swayidle -w timeout 300 'niri msg action power-off-monitors' "
+spawn-at-startup "sh" "-c" "python .config/no_cache_server.py --dir ~/.config --port 5000"
+
+//https://github.com/gvolpe/nfsm?tab=readme-ov-file
+//https://github.com/probeldev/niri-screen-time
+//https://github.com/Vortriz/awesome-niri?tab=readme-ov-file
+//https://github.com/saltnpepper97/stasis
+//https://github.com/heyoeyo/niri_tweaks?tab=readme-ov-file
+
+binds {
+
+Mod+v { spawn "sh" "-c" "python3 ~/.config/niri/niri_tweaks/niri_peekaboo.py"; }
+Mod+Shift+k {
+        spawn "sh" "-c" "~/03-l2tp/macro.sh"
+    }
+Mod+space repeat=false { spawn "sh" "-c" "wl-kbptr -o modes=floating,click -o mode_floating.source=detect"; }
+Mod+return repeat=false { spawn "sh" "-c" "fuzzel --list-executables-in-path"; }
+Mod+s repeat=false { spawn "foot"; }
+Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
+Mod+f repeat=false { spawn "firefox"; }
+Mod+x repeat=false { spawn "chrome-zh"; }
+Mod+z repeat=false { spawn "Telegram";}
+Mod+p repeat=false { screenshot-screen; }
+//Mod+p repeat=false { spawn "sh" "-c" "grim -g \"$(slurp)\" - | satty -f -"; }
+Mod+q repeat=false { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy --type image/png && wl-paste --type image/png | swappy -f -"; }
+Mod+c repeat=false { toggle-overview;}
+Mod+w repeat=false { close-window; }
+Mod+Shift+w { quit; }
+Mod+e { toggle-window-rule-opacity; }
+Mod+r { switch-preset-column-width; }
+Mod+Escape repeat=false { power-off-monitors; }
+Mod+a { fullscreen-window; }
+
+Mod+j  cooldown-ms=70   { focus-column-left; }
+Mod+L  cooldown-ms=70   { focus-column-right; }
+Mod+i  cooldown-ms=70   { focus-window-or-workspace-up; }
+Mod+k  cooldown-ms=70  { focus-window-or-workspace-down; }
+Mod+Alt+j cooldown-ms=70    { move-column-left; }
+Mod+Alt+L cooldown-ms=70    { move-column-right; }
+Mod+Alt+k cooldown-ms=70 { move-window-down-or-to-workspace-down; }
+Mod+Alt+i cooldown-ms=70 { move-window-up-or-to-workspace-up; }
+Mod+Ctrl+k cooldown-ms=70 { move-column-to-workspace-down; }
+Mod+Ctrl+i cooldown-ms=70 { move-column-to-workspace-up; }
+Mod+u cooldown-ms=70 { consume-or-expel-window-left; }
+Mod+o cooldown-ms=70 { consume-or-expel-window-right; }
+Mod+b {focus-monitor-next;}
+Mod+alt+b {move-column-to-monitor-next;}
+
+Mod+t { spawn "sh" "-c" "brightnessctl s 5%+"; }
+Mod+g { spawn "sh" "-c" "brightnessctl s 5%-"; }
+Mod+h allow-when-locked=true { spawn "sh" "-c" "amixer set Master 1-"; }
+Mod+y allow-when-locked=true { spawn "sh" "-c" "amixer set Master 1+"; }
+
+Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
+Mod+MouseRight  { focus-column-right; }
+Mod+MouseLeft  { focus-column-left; }
+
+}

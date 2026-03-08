@@ -1,0 +1,2 @@
+* javascript.info 教程
+** [[https://developer.mozilla.org/en-US/docs/Web/JavaScript/][MDN]]

@@ -1,0 +1,88 @@
+[ids]
+feed
+
+[main]
+
+space=overloadt2(spacefn, space, 200)
+
+esc=overloadt2(shift, esc, 200)
+enter=overloadt2(shift, enter, 200)
+
+leftalt=overloadt2(control, oneshot(alt), 200)
+rightalt=overloadt2(control, oneshot(alt), 200)
+
+z=lettermod(meta, z, 150, 200)
+m=lettermod(meta, m, 150, 200)
+
+
+[spacefn]
+
+leftalt=toggle(mouse)
+rightalt=oneshot(fn)
+
+w=1
+e=2
+r=3
+s=4
+d=5
+f=6
+z=overloadt2(meta, 7, 200)
+x=8
+c=9
+v=0
+g=-
+t==
+
+u=home
+o=end
+i=up
+k=down
+j=left
+l=right
+y=pageup
+h=pagedown
+
+backspace=delete
+tab=`
+esc=overloadt2(shift, [, 200)
+enter=overloadt2(shift, ], 200)
+a='
+q=;
+p=\
+b=,
+n=.
+m=overloadt2(meta, /, 200)
+
+[mouse]
+i=f13
+k=f14
+j=f15
+l=f16
+s=f17
+d=f18
+x=f19
+c=f20
+y=f21
+h=f22
+u=f23
+o=f24
+b=clearm(leftmouse)
+f=leftmouse
+g=rightmouse
+r=compose
+esc=clear()
+p=M-p
+
+[fn]
+w=f1
+e=f2
+r=f3
+s=f4
+d=f5
+f=f6
+z=f7
+x=f8
+c=f9
+v=f10
+g=f11
+t=f12

@@ -1,0 +1,437 @@
+;;; vv-mode.el --- kakoune-ish modal editing -*- lexical-binding: t; -*-
+
+(custom-set-faces
+ '(cursor ((t (:background "orange")))))
+
+(defvar vv-normal-map (make-sparse-keymap))
+(defvar vv-leader-map (make-sparse-keymap) "Leader keymap for vv-mode.")
+(defvar vv-insert-map (make-sparse-keymap))
+
+(defvar vv-w-state nil
+  "如果为 t，则移动/扩展命令会扩展选区而不是单独选词。")
+
+(defvar vv-w-history nil
+  "记录持续选择模式下的历史选区，用于 W 撤销。")
+
+(defun vv--cursor (color)
+  "Set cursor face background to COLOR."
+  (set-face-background 'cursor color))
+
+(defun vv--leave-w-state ()
+  "退出持续选择状态：清 w-state、光标色、取消选区。"
+  (setq vv-w-state nil)
+  (vv--cursor "orange")
+  (deactivate-mark))
+
+(defun vv--push-region-history ()
+  "若在 w-state 且有选区，把当前 region 入栈。"
+  (when (and vv-w-state (use-region-p))
+    (push (cons (region-beginning) (region-end)) vv-w-history)))
+
+(defun vv--ensure-region (from to)
+  "Set region [FROM, TO) and activate it."
+  (goto-char from)
+  (set-mark from)
+  (goto-char to)
+  (activate-mark))
+
+(defun vv--maybe-start-region ()
+  "非持续选择时，默认以 point 为起点 set-mark 并激活选区。"
+  (let ((start (point)))
+    (set-mark start)
+    (activate-mark)))
+
+(defun vv-to-normal ()
+  (interactive)
+  (setq cursor-type 'box)
+  (vv-normal-mode 1)
+  (vv-insert-mode -1))
+
+(defun vv-to-insert ()
+  (interactive)
+  (vv-insert-mode 1)
+  (vv-normal-mode -1)
+  (setq cursor-type 'bar))
+
+;; -------------------------
+;; w-mode: 持续选择 + 扩词
+;; -------------------------
+(defun vv-word ()
+  "进入持续选择 w 模式。
+如果光标下有词，则选中该词；否则就在当前位置设置 mark 并进入模式。"
+  (interactive)
+  (setq vv-w-state t
+        vv-w-history nil)
+  (let ((bounds (bounds-of-thing-at-point 'word)))
+    (if bounds
+        (vv--ensure-region (car bounds) (cdr bounds))
+      (set-mark (point))
+      (activate-mark)))
+  (vv--cursor "red"))
+
+(defun vv-expand-forward ()
+  "在持续选择模式下向右扩展一个词；否则选中右侧一个词。"
+  (interactive)
+  (if vv-w-state
+      (progn
+        (vv--push-region-history)
+        (let ((start (region-beginning))
+              (end (region-end)))
+          (goto-char end)
+          (forward-word 1)
+          (vv--ensure-region start (point))))
+    (let ((start (point)))
+      (forward-word 1)
+      (vv--ensure-region start (point)))))
+
+(defun vv-expand-backward ()
+  "在持续选择模式下向左扩展一个词；否则选中左侧一个词。"
+  (interactive)
+  (if vv-w-state
+      (progn
+        (vv--push-region-history)
+        (let ((start (region-beginning))
+              (end (region-end)))
+          (goto-char start)
+          (backward-word 1)
+          (vv--ensure-region (point) end)))
+    (let ((start (point)))
+      (backward-word 1)
+      (vv--ensure-region (point) start))))
+
+(defun vv-expand-undo ()
+  "撤销上一次扩展操作。"
+  (interactive)
+  (when (and vv-w-state vv-w-history)
+    (let* ((last (pop vv-w-history))
+           (start (car last))
+           (end (cdr last)))
+      (vv--ensure-region start end))))
+
+;; -------------------------
+;; 统一“移动类命令”的模板
+;; -------------------------
+(defmacro vv--def-move (name doc move-form)
+  "定义一个移动命令：w-state 下入栈并移动；否则清状态再移动。"
+  `(defun ,name ()
+     ,doc
+     (interactive)
+     (if vv-w-state
+         (progn
+           (vv--push-region-history)
+           ,move-form)
+       (progn
+         (vv--leave-w-state)
+         ,move-form))))
+
+(vv--def-move vv-next-line "向下移动；w-state 下扩选。" (next-line 1))
+(vv--def-move vv-previous-line "向上移动；w-state 下扩选。" (previous-line 1))
+(vv--def-move vv-backward-char "向左移动；w-state 下扩选。" (backward-char 1))
+(vv--def-move vv-forward-char "向右移动；w-state 下扩选。" (forward-char 1))
+
+(vv--def-move vv-buffer-begin "到 buffer 开头；w-state 下扩选，否则开始选区。" (beginning-of-buffer))
+(vv--def-move vv-buffer-end "到 buffer 末尾；w-state 下扩选，否则开始选区。" (end-of-buffer))
+(vv--def-move vv-line-begin "到行首；w-state 下扩选，否则开始选区。" (beginning-of-line))
+(vv--def-move vv-line-end "到行尾；w-state 下扩选，否则开始选区。" (end-of-line))
+
+(defun vv-open-below ()
+  (interactive)
+  (end-of-line)
+  (newline-and-indent)
+  (vv-to-insert))
+
+(defun vv-open-above ()
+  (interactive)
+  (beginning-of-line)
+  (open-line 1)
+  (vv-to-insert))
+
+(defun vv-insert-at-end ()
+  "Insert at point, or at the end of region if active."
+  (interactive)
+  (when (use-region-p)
+    (goto-char (region-end)))
+  (deactivate-mark)
+  (vv--leave-w-state)
+  (vv-to-insert))
+
+(defun vv-insert-at-start ()
+  "Insert at the beginning of word, or at region start if region active."
+  (interactive)
+  (if (use-region-p)
+      (goto-char (region-beginning))
+    (backward-word 1))
+  (deactivate-mark)
+  (vv--leave-w-state)
+  (vv-to-insert))
+
+(defun vv-kill-s ()
+  "如果有选区，kill-region；没有选区，kill-line."
+  (interactive)
+  (if (use-region-p)
+      (kill-region (region-beginning) (region-end))
+    (kill-line)))
+
+(defun vv-change ()
+  (interactive)
+  (if (use-region-p)
+      (progn
+        (delete-region (region-beginning) (region-end))
+        (vv--leave-w-state)
+        (vv-to-insert))
+    (when (not (eobp))
+      (delete-char 1)
+      (vv-to-insert))))
+
+(defun vv-delete-char ()
+  (interactive)
+  (delete-char 1))
+
+(defun vv-quit ()
+  "ESC 或 C-g 通用退出函数。
+在 minibuffer 内退出 recursive edit，普通 buffer 等同 keyboard-quit."
+  (interactive)
+  (vv--leave-w-state)
+  (if (minibufferp)
+      (abort-recursive-edit)
+    (keyboard-quit)))
+
+;; -------------------------
+;; 行选择（保留你原来的逻辑）
+;; -------------------------
+(defun vv-select-line ()
+  "行选择，支持向上或向下扩展。"
+  (interactive)
+  (setq vv-w-state nil)
+  (vv--cursor "orange")
+
+  (cond
+   ;; 1. 无选区，或 mark 在前，或 point 和 mark 重合 => 向下扩展
+   ((or (not (use-region-p))
+        (< (mark) (point)))
+    (if (and (use-region-p)
+             (save-excursion
+               (goto-char (region-beginning))
+               (bolp)))
+        (progn
+          (next-line))
+      (progn
+        (beginning-of-line)
+        (set-mark (point))
+        (next-line)
+        (activate-mark))))
+
+   ;; 2. 如果 point 在前 => 向上扩展
+   (t
+    (if (save-excursion
+          (goto-char (region-beginning))
+          (bolp))
+        (progn
+          (forward-line -1))
+      (progn
+        (beginning-of-line)
+        (next-line)
+        (set-mark (point))
+        (previous-line))))))
+
+;; -------------------------
+;; avy 选择扩展（保留语义）
+;; -------------------------
+(defun vv-avy-char-time-expand ()
+  (interactive)
+  (if vv-w-state
+      (progn
+        (vv--push-region-history)
+        (avy-goto-char-timer))
+    (progn
+      (vv--maybe-start-region)
+      (avy-goto-char-timer)
+      (activate-mark))))
+
+;; -------------------------
+;; Buffer 切换（保留）
+;; -------------------------
+(defun vv--user-buffer-p (buf)
+  "Return non-nil if BUF is a user buffer (not internal/system)."
+  (let ((name (buffer-name buf)))
+    (not (or (string-prefix-p " " name)
+             (string-prefix-p "*" name)))))
+
+(defun vv--list-user-buffers ()
+  "Return list of user buffer names."
+  (mapcar #'buffer-name
+          (seq-filter #'vv--user-buffer-p (buffer-list))))
+
+(defun vv--echo-buffer-list ()
+  "Echo all user buffers, highlight current one."
+  (let* ((buffers (vv--list-user-buffers))
+         (current (buffer-name))
+         (msg ""))
+    (dolist (b buffers)
+      (setq msg
+            (concat msg
+                    (if (string= b current)
+                        (propertize (format "%s " b)
+                                    'face '(:foreground "red" :weight bold))
+                      (propertize (format "%s " b)
+                                  'face '(:foreground "gray"))))))
+    (message "%s" msg)))
+
+(defun vv-next-buffer ()
+  "Switch to next user buffer and echo list."
+  (interactive)
+  (let ((start (current-buffer)))
+    (next-buffer)
+    (while (and (not (eq (current-buffer) start))
+                (not (vv--user-buffer-p (current-buffer))))
+      (next-buffer)))
+  (vv--echo-buffer-list))
+
+(defun vv-previous-buffer ()
+  "Switch to previous user buffer and echo list."
+  (interactive)
+  (let ((start (current-buffer)))
+    (previous-buffer)
+    (while (and (not (eq (current-buffer) start))
+                (not (vv--user-buffer-p (current-buffer))))
+      (previous-buffer)))
+  (vv--echo-buffer-list))
+
+;; -------------------------
+;; mode 定义
+;; -------------------------
+(define-minor-mode vv-normal-mode
+  "VV normal mode"
+  :init-value t
+  :lighter " N"
+  :keymap vv-normal-map)
+
+(define-minor-mode vv-insert-mode
+  "VV insert mode"
+  :init-value nil
+  :lighter " I"
+  :keymap vv-insert-map)
+
+(defun vv-disable-normal-in-minibuffer ()
+  "进入 minibuffer 时禁用 vv-normal-mode。"
+  (when (bound-and-true-p vv-normal-mode)
+    (vv-normal-mode -1)))
+(add-hook 'minibuffer-setup-hook #'vv-disable-normal-in-minibuffer)
+
+;; -------------------------
+;; mark 高亮（保留）
+;; -------------------------
+(setq mark-ring-max 1)
+
+(defvar vv-mark-overlay nil
+  "Overlay 用于高亮当前 mark.")
+
+(defun vv-show-mark ()
+  "高亮当前 mark。"
+  (when (mark)
+    (if (not vv-mark-overlay)
+        (setq vv-mark-overlay (make-overlay (mark) (1+ (mark))))
+      (move-overlay vv-mark-overlay (mark) (1+ (mark)) (current-buffer)))
+    (overlay-put vv-mark-overlay 'face '(:background "gray"))))
+
+(defun vv-hide-mark ()
+  "隐藏 mark 高亮。"
+  (when vv-mark-overlay
+    (delete-overlay vv-mark-overlay)
+    (setq vv-mark-overlay nil)))
+
+(add-hook 'post-command-hook #'vv-show-mark)
+
+;; -------------------------
+;; 键位绑定（保持原样）
+;; -------------------------
+;; w-state
+(define-key vv-normal-map (kbd "w") #'vv-word)
+(define-key vv-normal-map (kbd "e") #'vv-expand-forward)
+(define-key vv-normal-map (kbd "b") #'vv-expand-backward)
+(define-key vv-normal-map (kbd "W") #'vv-expand-undo)
+
+;; movement
+(define-key vv-normal-map (kbd "j") #'vv-next-line)
+(define-key vv-normal-map (kbd "k") #'vv-previous-line)
+(define-key vv-normal-map (kbd "h") #'vv-backward-char)
+(define-key vv-normal-map (kbd "l") #'vv-forward-char)
+
+(define-key vv-normal-map (kbd "H") (kbd "<S-left>"))
+(define-key vv-normal-map (kbd "L") (kbd "<S-right>"))
+(define-key vv-normal-map (kbd "K") (kbd "<S-up>"))
+(define-key vv-normal-map (kbd "J") (kbd "<S-down>"))
+
+;; open lines
+(define-key vv-normal-map (kbd ";") #'vv-open-below)
+(define-key vv-normal-map (kbd ":") #'vv-open-above)
+
+;; insert
+(define-key vv-normal-map (kbd "i") #'vv-insert-at-end)
+(define-key vv-normal-map (kbd "a") #'vv-insert-at-start)
+
+;; select line
+(define-key vv-normal-map (kbd "x") #'vv-select-line)
+
+;; kill/change/delete
+(define-key vv-normal-map (kbd "s") #'vv-kill-s)
+(define-key vv-normal-map (kbd "c") #'vv-change)
+(define-key vv-normal-map (kbd "d") #'vv-delete-char)
+
+;; quit / escape behavior（保留你原来的绑定）
+(global-set-key (kbd "C-g") #'vv-quit)
+(global-set-key (kbd "<escape>") #'vv-quit)
+(define-key vv-normal-map (kbd "g") #'vv-quit)
+(define-key vv-normal-map (kbd "<escape>") #'execute-extended-command)
+
+;; yank / undo / misc
+(define-key vv-normal-map (kbd "p") #'yank)
+(define-key vv-normal-map (kbd "P") #'yank-from-kill-ring)
+(define-key vv-normal-map (kbd "u") #'undo-only)
+(define-key vv-normal-map (kbd "U") #'undo-redo)
+(define-key vv-normal-map (kbd "m") #'exchange-point-and-mark)
+
+;; buffer begin/end and line begin/end
+(define-key vv-normal-map (kbd ",") #'vv-buffer-begin)
+(define-key vv-normal-map (kbd ".") #'vv-buffer-end)
+(define-key vv-normal-map (kbd "[") #'vv-line-begin)
+(define-key vv-normal-map (kbd "]") #'vv-line-end)
+
+;; buffer switching
+(define-key vv-normal-map (kbd "v") #'vv-next-buffer)
+(define-key vv-normal-map (kbd "V") #'vv-previous-buffer)
+
+;; window ops
+(define-key vv-normal-map (kbd "q") #'quit-window)
+(define-key vv-normal-map (kbd "Q") #'delete-other-windows)
+
+;; y / r / t / SPC
+(define-key vv-normal-map (kbd "y") #'kill-ring-save)
+(define-key vv-normal-map (kbd "r") #'query-replace)
+(define-key vv-normal-map (kbd "t") #'query-replace)
+(define-key vv-normal-map (kbd "<SPC>") #'set-mark-command)
+
+;; avy
+(define-key vv-normal-map (kbd "f") #'vv-avy-char-time-expand)
+(define-key vv-normal-map (kbd "n") #'avy-next)
+(define-key vv-normal-map (kbd "N") #'avy-prev)
+(setq avy-keys (number-sequence ?a ?z))
+
+;; repeat / quit emacs / other-window
+(define-key vv-normal-map (kbd "z") #'repeat)
+(define-key vv-normal-map (kbd "Z z q") #'save-buffers-kill-emacs)
+(define-key vv-normal-map (kbd "o") #'other-window)
+
+;; leader: /
+(define-key vv-normal-map (kbd "/") vv-leader-map)
+(define-key vv-leader-map (kbd "s") #'save-buffer)
+(define-key vv-leader-map (kbd "k") #'kill-buffer)
+(define-key vv-leader-map (kbd "f") #'find-file-other-window)
+(define-key vv-leader-map (kbd "F") #'find-file-at-point)
+(define-key vv-leader-map (kbd "g") #'link-hint-open-link)
+
+;; insert-map: ESC 回 normal
+(define-key vv-insert-map (kbd "<escape>") #'vv-to-normal)
+
+(provide 'vv-mode)
+;;; vv-mode.el ends here
