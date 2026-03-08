@@ -17,8 +17,6 @@
 
 .local/bin
 
-.notes
-
 .asoundrc
 .bashrc
 .gitconfig

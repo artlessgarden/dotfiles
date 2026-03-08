@@ -71,7 +71,8 @@ alias pacu="sudo pacman -Syu"
 #     xargs -ro sudo pacman -S
 # }
 alias gl='git clone --depth=1'
-alias dot='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dot='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias lazydot='lazygit --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 dotadd () {
   cd "$HOME" || return 1
 
