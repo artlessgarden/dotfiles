@@ -191,7 +191,14 @@ fi
 
 
 alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
-alias rgd='rg -n ~/googledrive-local/.search-text'
+d() {
+    local tmp="$(mktemp)"
+    yazi --cwd-file="$tmp"
+    if [ -f "$tmp" ]; then
+        cd "$(cat "$tmp")"
+        rm -f "$tmp"
+    fi
+}
 
 export QT_QPA_PLATFORM=wayland
 export PATH="$HOME/.local/bin:$PATH"
@@ -201,6 +208,14 @@ export EDITOR=nvim
 
 fastfetch
 timedatectl
-# opencode
-export PATH=/home/xiang/.opencode/bin:$PATH
 
+echo
+echo "=== alias ==="
+echo "g  -> git"
+echo "v  -> nvim"
+echo "y  -> yazi"
+echo
+echo
+echo "=== My Aliases ==="
+alias
+echo

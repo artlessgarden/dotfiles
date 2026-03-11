@@ -1,7 +1,7 @@
 sort=-time
 layer=overlay
 background-color=#00000099
-width=400
+width=4000
 height=200
 border-size=0
 border-color=#88c0d0
@@ -25,3 +25,4 @@ default-timeout=5000
 [category=mpd]
 default-timeout=2000
 group-by=category
+

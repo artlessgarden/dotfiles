@@ -9,6 +9,11 @@ layout {
     gaps 4
     preset-column-widths { proportion 0.382; proportion 0.618;proportion 1.0; }
     default-column-width { proportion 0.618; }
+	preset-window-heights {
+        proportion 0.382
+        proportion 0.618
+		proportion 1.0
+    }
     always-center-single-column
 
     focus-ring {
@@ -43,7 +48,7 @@ output "eDP-1" {
         off
 }
 output "DP-1" {
-        scale 1.25
+        scale 1
         mode "2560x1440@60.011"
         position x=0 y=0
         focus-at-startup
@@ -92,11 +97,12 @@ window-rule { open-floating false; }
 spawn-at-startup "sh" "-c" "fcitx5 -d"
 spawn-at-startup "sh" "-c" "swaybg -m fill -i ~/.config/niri/bg.jpg"
 spawn-at-startup "foot"
+spawn-at-startup "gnome-pomodoro"
 spawn-at-startup "mouseless"
 spawn-at-startup "sh" "-c" "wlsunset -l 29.5 -L 116"
-spawn-at-startup "sh" "-c" "swayidle -w timeout 300 'niri msg action power-off-monitors' "
+//spawn-at-startup "sh" "-c" "swayidle -w timeout 300 'niri msg action power-off-monitors' "
 spawn-at-startup "sh" "-c" "python .config/no_cache_server.py --dir ~/.config --port 5000"
-
+spawn-at-startup "sh" "-c" "swayidle -w timeout 180 'swaylock -f -c 000000' timeout 200 'niri msg action power-off-monitors' resume 'niri msg action power-on-monitors'"
 //https://github.com/gvolpe/nfsm?tab=readme-ov-file
 //https://github.com/probeldev/niri-screen-time
 //https://github.com/Vortriz/awesome-niri?tab=readme-ov-file
@@ -104,15 +110,12 @@ spawn-at-startup "sh" "-c" "python .config/no_cache_server.py --dir ~/.config --
 //https://github.com/heyoeyo/niri_tweaks?tab=readme-ov-file
 
 binds {
-
-Mod+v { spawn "sh" "-c" "python3 ~/.config/niri/niri_tweaks/niri_peekaboo.py"; }
-Mod+Shift+k {
-        spawn "sh" "-c" "~/03-l2tp/macro.sh"
-    }
+Mod+e { switch-preset-window-height ;}
+Mod+v { spawn "sh" "-c" "foot -e alsamixer -c 1"; }
 Mod+space repeat=false { spawn "sh" "-c" "wl-kbptr -o modes=floating,click -o mode_floating.source=detect"; }
-Mod+return repeat=false { spawn "sh" "-c" "fuzzel --list-executables-in-path"; }
+Mod+return repeat=false { spawn "sh" "-c" "fuzzel"; }
 Mod+s repeat=false { spawn "foot"; }
-Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
+Mod+d repeat=false { spawn "sh" "-c" "foot -e yazi"; }
 Mod+f repeat=false { spawn "firefox"; }
 Mod+x repeat=false { spawn "chrome-zh"; }
 Mod+z repeat=false { spawn "Telegram";}
@@ -122,7 +125,7 @@ Mod+q repeat=false { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy --type im
 Mod+c repeat=false { toggle-overview;}
 Mod+w repeat=false { close-window; }
 Mod+Shift+w { quit; }
-Mod+e { toggle-window-rule-opacity; }
+//Mod+e { toggle-window-rule-opacity; }
 Mod+r { switch-preset-column-width; }
 Mod+Escape repeat=false { power-off-monitors; }
 Mod+a { fullscreen-window; }
