@@ -1,4 +1,10 @@
+.asoundrc
+.bashrc
 
+.config/chromium-flags.conf
+.config/cmus
+.config/fcitx5
+.config/fd
 .config/fontconfig
 .config/foot
 .config/fuzzel
@@ -9,16 +15,19 @@
 .config/mouseless
 .config/niri
 .config/nvim
+.config/pipewire
+.config/surfingkeys.js
 .config/wl-kbptr
 .config/yazi
 
-.config/chrome-flags.conf
+.dotfiles-list
+
+.emacs.d/early-init.el
+.emacs.d/init.el
+.emacs.d/lisp
+
+.gitconfig
+inbox.md
+.inputrc
 
 .local/bin
-
-.asoundrc
-.bashrc
-.gitconfig
-.inputrc
-.dotfiles-list
-.gitconfig

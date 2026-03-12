@@ -23,6 +23,14 @@ vim.o.hlsearch = true
 vim.opt.autochdir = true
 vim.opt.shada = [['20,<50,s10,h]]
 
+vim.o.grepprg = "rg --vimgrep"
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+	callback = function(args)
+		local dir = vim.fn.fnamemodify(args.file, ":p:h")
+		vim.fn.mkdir(dir, "p")
+	end,
+})
 ---- clipboard
 map({ "n", "x", "o" }, "<leader>y", '"+y', { desc = "Copy to clipboard" })
 map({ "n", "x", "o" }, "<leader>p", '"+p', { desc = "Paste clipboard text" })
@@ -62,7 +70,7 @@ map("n", "<leader>d", ":Explore ~<CR>", opts)
 vim.o.background = "dark"
 vim.cmd.colorscheme("retrobox")
 
-map("n", "<leader>m", function()
+map("n", "<leader>b", function()
 	if vim.o.background == "dark" then
 		vim.o.background = "light"
 		vim.cmd.colorscheme("retrobox")
@@ -79,6 +87,12 @@ map("i", "<Esc>", [[<Esc>:lua os.execute("fcitx5-remote -c")<CR>]], opts)
 map("t", "<Esc>", [[<C-\><C-n>]], opts)
 -- terminal 模式模拟 Ctrl-R 效果
 map("t", "<C-R>", [[<C-\><C-N>"'.nr2char(getchar()).'pi']], opts)
+
+-- backlink
+map("n", "gb", function()
+	vim.cmd("silent grep % .")
+	vim.cmd("copen")
+end)
 
 -------------------------------
 local function open_gdrive_web()

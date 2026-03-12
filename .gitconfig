@@ -1,11 +1,10 @@
 [user]
-	name = work
-	email = work@work.com
+	name = less
+	email = less@less.com
 [init]
 	defaultBranch = main
-[core]
-	editor = nvim
 [color]
 	ui = auto
 [alias]
 	lg = log --oneline --graph --decorate
+

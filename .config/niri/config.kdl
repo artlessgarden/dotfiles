@@ -2,51 +2,29 @@ input {
     keyboard { repeat-delay 200; repeat-rate 30; }
     touchpad { tap; dwt; dwtp; natural-scroll; }
     focus-follows-mouse max-scroll-amount="0%"
-   // warp-mouse-to-focus
+    // warp-mouse-to-focus
     workspace-auto-back-and-forth
 }
 layout {
-    gaps 4
+    gaps 0
     preset-column-widths { proportion 0.382; proportion 0.618;proportion 1.0; }
     default-column-width { proportion 0.618; }
-	preset-window-heights {
-        proportion 0.382
-        proportion 0.618
-		proportion 1.0
-    }
-    always-center-single-column
-
-    focus-ring {
-        // off
-        on
-        width 2
-        active-color "wheat"
-        inactive-color "#505050"
-        urgent-color "#9b0000"
-        // active-gradient from="#80c8ff" to="#bbddff" angle=45
-        // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
-        // urgent-gradient from="#800" to="#a33" angle=45
-    }
-
+    focus-ring { off; }
     background-color "transparent"
-    struts {
-        left 16
-        right 16
-        top 16
-        bottom 16
-    }
-    insert-hint {
-        // off
-        color "#ffc87f80"
-        gradient from="#ffbb6680" to="#ffc88080" angle=45 relative-to="workspace-view"
-    }
-  }
+    always-center-single-column
+}
 gestures { hot-corners { off; };}
 animations { off ;}
+
+output "HDMI-A-1" {
+    scale 1
+    focus-at-startup
+    mode "1920x1080@100.000"
+    }
 output "eDP-1" {
-        scale 1.75;
-        off
-}
+    // off
+    scale 1.75
+    }
 output "DP-1" {
         scale 1
         mode "2560x1440@60.011"
@@ -57,7 +35,6 @@ output "DP-1" {
 }
 
 // Make the wallpaper stationary, rather than moving with workspaces.
-
 layer-rule {
     // This is for swaybg; change for other wallpaper tools.
     // Find the right namespace by running niri msg layers.
@@ -90,42 +67,34 @@ prefer-no-csd
 hotkey-overlay { skip-at-startup; }
 //cursor { hide-when-typing; hide-after-inactive-ms 5000; }
 screenshot-path null
-// window-rule { match is-focused=true; opacity 0.95; }
-// window-rule { match is-focused=false; opacity 0.8; }
+window-rule { match is-focused=true; opacity 0.9; }
+window-rule { match is-focused=false; opacity 0.75; }
 window-rule { open-floating false; }
 
 spawn-at-startup "sh" "-c" "fcitx5 -d"
-spawn-at-startup "sh" "-c" "swaybg -m fill -i ~/.config/niri/bg.jpg"
+spawn-at-startup "sh" "-c" "swaybg -m fill -i ~/archive/wallpaper/bg1.jpeg"
 spawn-at-startup "foot"
 spawn-at-startup "gnome-pomodoro"
 spawn-at-startup "mouseless"
 spawn-at-startup "sh" "-c" "wlsunset -l 29.5 -L 116"
-//spawn-at-startup "sh" "-c" "swayidle -w timeout 300 'niri msg action power-off-monitors' "
-spawn-at-startup "sh" "-c" "python .config/no_cache_server.py --dir ~/.config --port 5000"
-spawn-at-startup "sh" "-c" "swayidle -w timeout 180 'swaylock -f -c 000000' timeout 200 'niri msg action power-off-monitors' resume 'niri msg action power-on-monitors'"
-//https://github.com/gvolpe/nfsm?tab=readme-ov-file
-//https://github.com/probeldev/niri-screen-time
-//https://github.com/Vortriz/awesome-niri?tab=readme-ov-file
-//https://github.com/saltnpepper97/stasis
-//https://github.com/heyoeyo/niri_tweaks?tab=readme-ov-file
+spawn-at-startup "sh" "-c" "swayidle -w timeout 180 'swaylock     --screenshots     --clock     --indicator     --indicator-radius 100     --indicator-thickness 7     --effect-blur 7x5     --effect-vignette 0.5:0.5     --ring-color bb00cc     --key-hl-color 880033     --line-color 00000000     --inside-color 00000088     --separator-color 00000000     --grace 2     --fade-in 0.2' timeout 200 'niri msg action power-off-monitors' resume 'niri msg action power-on-monitors'"
+spawn-at-startup "sh" "-c" "dufs -A"
+spawn-at-startup "udiskie -a"
 
 binds {
-Mod+e { switch-preset-window-height ;}
 Mod+v { spawn "sh" "-c" "foot -e alsamixer -c 1"; }
 Mod+space repeat=false { spawn "sh" "-c" "wl-kbptr -o modes=floating,click -o mode_floating.source=detect"; }
-Mod+return repeat=false { spawn "sh" "-c" "fuzzel"; }
+Mod+return repeat=false { spawn "sh" "-c" "fuzzel --list-executables-in-path"; }
 Mod+s repeat=false { spawn "foot"; }
-Mod+d repeat=false { spawn "sh" "-c" "foot -e yazi"; }
+Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
 Mod+f repeat=false { spawn "firefox"; }
-Mod+x repeat=false { spawn "chrome-zh"; }
-Mod+z repeat=false { spawn "Telegram";}
+Mod+x repeat=false { spawn "helium-browser"; }
 Mod+p repeat=false { screenshot-screen; }
-//Mod+p repeat=false { spawn "sh" "-c" "grim -g \"$(slurp)\" - | satty -f -"; }
 Mod+q repeat=false { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy --type image/png && wl-paste --type image/png | swappy -f -"; }
-Mod+c repeat=false { toggle-overview;}
+Mod+c repeat=false { toggle-overview; }
 Mod+w repeat=false { close-window; }
 Mod+Shift+w { quit; }
-//Mod+e { toggle-window-rule-opacity; }
+Mod+e { toggle-window-rule-opacity; }
 Mod+r { switch-preset-column-width; }
 Mod+Escape repeat=false { power-off-monitors; }
 Mod+a { fullscreen-window; }
@@ -154,5 +123,34 @@ Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
 Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
 Mod+MouseRight  { focus-column-right; }
 Mod+MouseLeft  { focus-column-left; }
+Mod+MouseForward cooldown-ms=70 { consume-or-expel-window-left; }
+Mod+MouseBack cooldown-ms=70 { consume-or-expel-window-right; }
+//    Mod+MouseMiddle  { close-window; }
+//    Mod+MouseForward { close-window; }
+//    Mod+MouseBack    { close-window; }
+
+//Mod+tab repeat=false { toggle-column-tabbed-display; }
+//bindsym mod4+space exec foot -e sh -c 'wl-paste | trans :zh; read'
+//Mod+Ctrl+j {spawn "sh" "-c" "playerctl position 5-";}
+//Mod+Ctrl+l {spawn "sh" "-c" "playerctl position 5+";}
+//Mod+Ctrl+i {spawn "sh" "-c" "p=$(playerctl position); p=${p%.*}; playerctl position $((p - 30))";}
+//Mod+Ctrl+k {spawn "sh" "-c" "p=$(playerctl position); p=${p%.*}; playerctl position $((p + 30))";}
+//Mod+Ctrl+n {spawn "sh" "-c" "playerctl next";}
+//Mod+Ctrl+p {spawn "sh" "-c" "playerctl previous";}
+//Mod+Ctrl+space {spawn "sh" "-c" "playerctl play-pause";}
+//Mod+h allow-when-locked=true { spawn "sh" "-c" "pactl set-sink-volume @DEFAULT_SINK@ -5%"; }
+//Mod+y allow-when-locked=true { spawn "sh" "-c" "pactl set-sink-volume @DEFAULT_SINK@ +5%"; }
+
+Mod+0 { spawn "sh" "-c" "ddcutil setvcp 0x10 0"; }
+Mod+1 { spawn "sh" "-c" "ddcutil setvcp 0x10 10"; }
+Mod+2 { spawn "sh" "-c" "ddcutil setvcp 0x10 20"; }
+Mod+3 { spawn "sh" "-c" "ddcutil setvcp 0x10 30"; }
+Mod+4 { spawn "sh" "-c" "ddcutil setvcp 0x10 40"; }
+Mod+5 { spawn "sh" "-c" "ddcutil setvcp 0x10 50"; }
+Mod+6 { spawn "sh" "-c" "ddcutil setvcp 0x10 60"; }
+Mod+7 { spawn "sh" "-c" "ddcutil setvcp 0x10 70"; }
+Mod+8 { spawn "sh" "-c" "ddcutil setvcp 0x10 80"; }
+Mod+9 { spawn "sh" "-c" "ddcutil setvcp 0x10 5"; }
+
 
 }

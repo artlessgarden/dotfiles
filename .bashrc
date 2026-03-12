@@ -6,6 +6,7 @@
 [[ $- != *i* ]] && return
 
 
+########################################################################################################
 function parse_git_branch() {
   branch=$(git symbolic-ref --short HEAD 2>/dev/null) || return
   dirty=$(git status --porcelain 2>/dev/null)
@@ -13,15 +14,24 @@ function parse_git_branch() {
 }
 PS1='\n\[\e[38;5;223;48;5;238m\]\A \W\[\e[38;5;218m\]$(parse_git_branch)\[\e[0m\] '
 
+
+########################################################################################################
 # Use bash-completion, if available
 [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
     . /usr/share/bash-completion/bash_completion
 
+export QT_QPA_PLATFORM=wayland
+export PATH="$HOME/.local/bin:$PATH"
+export EDITOR="nvim"
+
+
+########################################################################################################
 # Set up fzf key bindings and fuzzy completion
 eval "$(fzf --bash)"
 export FZF_COMPLETION_OPTS='--info=inline'
 export FZF_DEFAULT_OPTS='--bind "ctrl-y:execute-silent(printf {} | cut -f 2- | wl-copy --trim-newline)"'
 
+########################################################################################################
 pacr() {
     local pkg logline timestamp_str ts formatted
     # 生成“首次安装时间戳<TAB>包名”的列表
@@ -52,26 +62,22 @@ pacr() {
     awk -F'\t' '{print $2}' | xargs -ro sudo pacman -Rns
 }
 
+####################################################
 # cd
 shopt -s autocd
 set -o noclobber
 shopt -s checkwinsize
 
-alias l='ls -Alh'
-alias p='ping'
+####################################################
+alias vim='nvim'
+alias ld='ls -Alh --color=auto'
 alias pacs='pacman --color always -Sl | sed -e "s: :/:; /installed/d" | cut -f 1 -d " " | fzf --multi --ansi --preview "pacman -Si {1}" | xargs -ro sudo pacman -S'
 alias pars='paru --color always -Sl | sed -e "s: :/:; /installed/d" | cut -f 1 -d " " | fzf --multi --ansi --preview "paru -Si {1}" | xargs -ro paru -S'
-alias paca="pacman --color always -Q | cut -f 1 -d ' ' | fzf --multi --ansi --preview 'pacman -Qi {1}' | xargs -ro sudo pacman -Rns"
+alias pacq="pacman --color always -Q | cut -f 1 -d ' ' | fzf --multi --ansi --preview 'pacman -Qi {1}' | xargs -ro sudo pacman -Rns"
 alias paco="pacman -Qqdt | sudo pacman -Rns -"
 alias pacu="sudo pacman -Syu"
-# pacj() {
-#     expac -S "%-30n %d" | \
-#     fzf --multi --preview 'pacman -Si {1}' --layout=reverse --prompt='> ' | \
-#     awk '{print $1}' | \
-#     xargs -ro sudo pacman -S
-# }
 alias gl='git clone --depth=1'
-alias dot='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dot='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias lazydot='lazygit --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 dotadd () {
   cd "$HOME" || return 1
@@ -105,6 +111,15 @@ dotadd () {
   dot status
 }
 
+    
+paca() {
+    expac -S "%-30n %d" | \
+    fzf --multi --preview 'pacman -Si {1}' --layout=reverse --prompt='> ' | \
+    awk '{print $1}' | \
+    xargs -ro sudo pacman -S
+}
+
+####################################################
 fg(){
   rg -n --hidden --smart-case \
      --max-columns 200 --max-columns-preview \
@@ -115,9 +130,11 @@ fg(){
       --bind 'enter:execute(nvim {1} +{2})'
 }
 ff() {
-  rg --files |
-  fzf --preview 'bat --style=numbers --color=always --line-range :300 {}' \
-      --bind 'enter:execute(nvim {})'
+  local dir="${1:-.}"
+  dir="${dir/#\~/$HOME}"
+  FZF_DEFAULT_COMMAND="fd --type f --hidden \"$dir\"" \
+  fzf -m --preview 'bat --color=always --style=numbers {} 2>/dev/null || less {}' \
+  | xargs -r "$EDITOR"
 }
 f() {
   local idx="$HOME/googledrive-local/.search-text"
@@ -145,10 +162,12 @@ f() {
       )"
 }
 
+
+####################################################
 # ~/.bashrc 增强 bash 历史记录
 # 1. 保留更多历史
-HISTSIZE=100000            # 当前 session 保留的命令数
-HISTFILESIZE=200000        # 写入 ~/.bash_history 的命令数
+HISTSIZE=10000000            # 当前 session 保留的命令数
+HISTFILESIZE=20000000        # 写入 ~/.bash_history 的命令数
 
 # 2. 清理重复，提升搜索可读性
 HISTCONTROL=ignoredups:erasedups
@@ -172,25 +191,16 @@ shopt -s histappend
 PROMPT_COMMAND='history -a; history -n'
 shopt -s lithist
 
-# --- foot: 上一条命令“输出区间”的 C/D 标记（Bash） ---
-# 1) 每条命令开始前，发“输出开始”标记（用 PS0；注意 $'...' 让 \e 变 ESC）
-PS0+=$'\e]133;C\e\\'
-# 2) 每条命令结束、显示提示符前，发“输出结束+退出码”
-command_done() {
-  local ec=$?               # 上一条命令的退出码
-  printf '\e]133;D;%d\e\\' "$ec"
-}
 
-# 把 command_done 挂到 PROMPT_COMMAND 的最前面
-if [[ -n "$PROMPT_COMMAND" ]]; then
-  PROMPT_COMMAND='command_done;'"$PROMPT_COMMAND"
-else
-  PROMPT_COMMAND='command_done'
-fi
-# --- end ---
 
+
+####################################################
 
 alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
+
+
+
+####################################################
 d() {
     local tmp="$(mktemp)"
     yazi --cwd-file="$tmp"
@@ -209,13 +219,4 @@ export EDITOR=nvim
 fastfetch
 timedatectl
 
-echo
-echo "=== alias ==="
-echo "g  -> git"
-echo "v  -> nvim"
-echo "y  -> yazi"
-echo
-echo
-echo "=== My Aliases ==="
 alias
-echo

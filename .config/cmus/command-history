@@ -1,0 +1,8 @@
+colorscheme
+q
+add archive/listen/
+add
+refresh
+clear 
+add ./
+refresh 
