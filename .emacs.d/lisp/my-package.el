@@ -316,7 +316,12 @@
   (elfeed-org)
   (global-set-key (kbd "C-x w") #'elfeed))
 
-
+(use-package prettier-js
+  :ensure t
+  :hook ((js-mode . prettier-js-mode)
+         (typescript-mode . prettier-js-mode)
+         (css-mode . prettier-js-mode)
+         (web-mode . prettier-js-mode)))
 
 (provide 'my-package)
 
