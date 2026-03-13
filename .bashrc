@@ -20,10 +20,6 @@ PS1='\n\[\e[38;5;223;48;5;238m\]\A \W\[\e[38;5;218m\]$(parse_git_branch)\[\e[0m\
 [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
     . /usr/share/bash-completion/bash_completion
 
-export QT_QPA_PLATFORM=wayland
-export PATH="$HOME/.local/bin:$PATH"
-export EDITOR="nvim"
-
 
 ########################################################################################################
 # Set up fzf key bindings and fuzzy completion
@@ -192,14 +188,6 @@ PROMPT_COMMAND='history -a; history -n'
 shopt -s lithist
 
 
-
-
-####################################################
-
-alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
-
-
-
 ####################################################
 d() {
     local tmp="$(mktemp)"
@@ -209,10 +197,6 @@ d() {
         rm -f "$tmp"
     fi
 }
-
-export QT_QPA_PLATFORM=wayland
-export PATH="$HOME/.local/bin:$PATH"
-export EDITOR=nvim
 
 [ "$(tty)" = "/dev/tty1" ] && exec niri-session
 

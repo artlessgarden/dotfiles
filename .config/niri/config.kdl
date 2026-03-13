@@ -72,7 +72,7 @@ window-rule { match is-focused=false; opacity 0.75; }
 window-rule { open-floating false; }
 
 spawn-at-startup "sh" "-c" "fcitx5 -d"
-spawn-at-startup "sh" "-c" "swaybg -m fill -i ~/archive/wallpaper/bg1.jpeg"
+spawn-at-startup "sh" "-c" "swaybg -m fill -i ~/.config/niri/bg1.jpg"
 spawn-at-startup "foot"
 spawn-at-startup "gnome-pomodoro"
 spawn-at-startup "mouseless"
