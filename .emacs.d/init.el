@@ -112,7 +112,7 @@
 (setq use-package-always-ensure t)
 
 ;;; theme
- (load-theme 'wombat t)
+(load-theme 'wombat t)
 
 
 (require 'my-package)
@@ -139,7 +139,7 @@
 ;;                                          (buffer-file-name x)))
 ;;                       (buffer-file-name x)))
 ;;                 (buffer-list))))
-;(setq org-refile-targets '((+org/opened-buffer-files :maxlevel . 9)))
+                                        ;(setq org-refile-targets '((+org/opened-buffer-files :maxlevel . 9)))
 (setq org-refile-targets
       '((("~/agarden" . nil) :maxlevel . 3)))
 
@@ -169,14 +169,15 @@
 ;;          ("C-c s i" . org-super-links-quick-insert-inline-link)
 ;;          ("C-c s C-d" . org-super-links-delete-link)))
 
-(require 'google-translate)
-(require 'google-translate-smooth-ui)
-(global-set-key (kbd "C-c t") 'google-translate-smooth-translate)
-(setq google-translate-translation-directions-alist '(("en" . "zh-CN")))
 
+(use-package google-translate
+  :config
+  (global-set-key (kbd "C-c t") 'google-translate-smooth-translate)
+  (setq google-translate-translation-directions-alist '(("en" . "zh-CN")))
+  )
 (use-package google-this
   :config (google-this-mode 1)
-     (global-set-key (kbd "C-x g") 'google-this-mode-submap))
+  (global-set-key (kbd "C-x g") 'google-this-mode-submap))
 
 
 (setq org-attach-id-dir "~/agarden/assets")
@@ -184,7 +185,7 @@
   (interactive)
   (let* ((src (read-file-name "选择文件: "))
          (assets-dir (expand-file-name "assets"
-                        (file-name-directory (buffer-file-name))))
+                                       (file-name-directory (buffer-file-name))))
          (dst (expand-file-name
                (file-name-nondirectory src)
                assets-dir)))

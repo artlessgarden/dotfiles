@@ -39,7 +39,7 @@
          ("M-s g" . consult-grep)
          ("M-s G" . consult-git-grep)
          ("M-s r" . consult-ripgrep)
-         ("M-s l" . consult-line)
+         ("C-s" . consult-line)
          ("M-s L" . consult-line-multi)
          ("M-s k" . consult-keep-lines)
          ("M-s u" . consult-focus-lines)
@@ -189,22 +189,6 @@
   )
 
 
-;; (use-package sis
-;;    :hook
-;;    ;为指定的缓冲区启用 /context/ 和 /inline region/ 模式
-;;    (((text-mode prog-mode) . sis-context-mode)
-;;     ((text-mode prog-mode) . sis-inline-mode))
-;;    :config
-;;    (sis-ism-lazyman-config "1" "2" 'fcitx5)
-;;    ;启用 /光标颜色/ 模式
-;;    (sis-global-cursor-color-mode t)
-;;    ;启用 /respect/ 模式
-;;    (sis-global-respect-mode t)
-;;    ;为所有缓冲区启用 /context/ 模式
-;;    (sis-global-context-mode t)
-;;    ;为所有缓冲区启用 /inline english/ 模式
-;;    (sis-global-inline-mode t)
-;;    )
 
 (use-package activities
   :init
@@ -261,17 +245,32 @@
   :hook ((prog-mode text-mode) . idle-highlight-mode))
 
 (use-package eglot
-  :hook 
-  ((js-ts-mode . eglot-ensure)
-   (tsx-ts-mode . eglot-ensure)
-   (typescript-ts-mode . eglot-ensure)
-   (html-ts-mode . eglot-ensure)
-   (json-ts-mode . eglot-ensure)
-   (markdown-mode . eglot-ensure)
-   (css-ts-mode . eglot-ensure))
+  :hook ((prog-mode . eglot-ensure)
+         (html-mode . eglot-ensure)
+         (web-mode . eglot-ensure))
   :config
+  
+  (add-to-list 'eglot-server-programs
+               '(web-mode . ("vue-language-server" "--stdio")))
   (setq eglot-events-buffer-size 0)
-  )
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrides '((eglot (styles orderless)))))
+
+(use-package treesit-auto
+  :ensure t
+  :custom
+  (treesit-auto-install t)
+  :config
+  (global-treesit-auto-mode)
+  (setq treesit-font-lock-level 4))
+
+(use-package web-mode
+  :ensure t
+  :config
+  (setq web-mode-enable-auto-closing t)
+  (setq web-mode-enable-auto-quoting t)
+  (setq web-mode-enable-auto-pairing t)
+  :mode ("\\.vue\\'" "\\.html\\'"))
 
 (use-package multiple-cursors
   :bind
@@ -282,6 +281,7 @@
 (use-package corfu
   :init
   (global-corfu-mode) ;; 全局开启
+  (corfu-popupinfo-mode)
   :custom
   (corfu-auto t)                 ;; 自动弹出，不用按键
   (corfu-cycle t)                ;; 列表循环
@@ -293,10 +293,18 @@
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
         ([backtab] . corfu-previous)))
+(use-package cape
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev))
+
+(add-hook 'prog-mode-hook #'flymake-mode)
 
 (use-package yasnippet
   :config
   (yas-global-mode 1))
+(use-package yasnippet-snippets
+  :ensure t)
 
 (use-package ace-pinyin)
 (use-package avy-zap)
@@ -306,22 +314,21 @@
 (advice-add 'orderless-regexp :filter-args #'orderless-regexp-pinyin)
 
 
-(use-package elfeed-org)
-(use-package elfeed
-  :init
-  ;; (setq elfeed-log-level 'error)
-  (setq rmh-elfeed-org-files '("~/.emacs.d/elfeed.org"))
-  :config
-  (require 'elfeed-org)
-  (elfeed-org)
-  (global-set-key (kbd "C-x w") #'elfeed))
+;; (use-package elfeed-org)
+;; (use-package elfeed
+;;   :init
+;;   ;; (setq elfeed-log-level 'error)
+;;   (setq rmh-elfeed-org-files '("~/.emacs.d/elfeed.org"))
+;;   :config
+;;   (require 'elfeed-org)
+;;   (elfeed-org)
+;;   (global-set-key (kbd "C-x w") #'elfeed))
 
-(use-package prettier-js
+(use-package apheleia
   :ensure t
-  :hook ((js-mode . prettier-js-mode)
-         (typescript-mode . prettier-js-mode)
-         (css-mode . prettier-js-mode)
-         (web-mode . prettier-js-mode)))
+  :config
+  (apheleia-global-mode +1))
+
 
 (provide 'my-package)
 
