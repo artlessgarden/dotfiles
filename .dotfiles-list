@@ -27,6 +27,5 @@
 .emacs.d/lisp
 
 .gitconfig
-inbox.md
 .inputrc
 .npmrc
