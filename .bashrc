@@ -27,7 +27,7 @@ eval "$(fzf --bash)"
 export FZF_COMPLETION_OPTS='--info=inline'
 export FZF_DEFAULT_OPTS='--bind "ctrl-y:execute-silent(printf {} | cut -f 2- | wl-copy --trim-newline)"'
 
-########################################################################################################
+#####################################################################
 alias pacw="pacman -Qqdt | sudo pacman -Rns -"
 alias pace="pacman --color always -Q | cut -f 1 -d ' ' | fzf --multi --ansi --preview 'pacman -Qi {1}' | xargs -ro sudo pacman -Rns"
 pacr() {
@@ -202,7 +202,5 @@ d() {
 [ "$(tty)" = "/dev/tty1" ] && exec niri-session
 
 fastfetch
-timedatectl
 
-alias
 export PATH="$HOME/.local/share/npm/bin:$PATH"
