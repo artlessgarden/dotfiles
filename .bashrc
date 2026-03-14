@@ -28,6 +28,8 @@ export FZF_COMPLETION_OPTS='--info=inline'
 export FZF_DEFAULT_OPTS='--bind "ctrl-y:execute-silent(printf {} | cut -f 2- | wl-copy --trim-newline)"'
 
 ########################################################################################################
+alias pacw="pacman -Qqdt | sudo pacman -Rns -"
+alias pace="pacman --color always -Q | cut -f 1 -d ' ' | fzf --multi --ansi --preview 'pacman -Qi {1}' | xargs -ro sudo pacman -Rns"
 pacr() {
     local pkg logline timestamp_str ts formatted
     # 生成“首次安装时间戳<TAB>包名”的列表
@@ -58,6 +60,10 @@ pacr() {
     awk -F'\t' '{print $2}' | xargs -ro sudo pacman -Rns
 }
 
+alias pacs='pacman --color always -Sl | sed -e "s: :/:; /installed/d" | cut -f 1 -d " " | fzf --multi --ansi --preview "pacman -Si {1}" | xargs -ro sudo pacman -S'
+alias pacd='paru --color always -Sl | sed -e "s: :/:; /installed/d" | cut -f 1 -d " " | fzf --multi --ansi --preview "paru -Si {1}" | xargs -ro paru -S'
+alias pacf="sudo pacman -Syu"
+
 ####################################################
 # cd
 shopt -s autocd
@@ -67,11 +73,6 @@ shopt -s checkwinsize
 ####################################################
 alias vim='nvim'
 alias ld='ls -Alh --color=auto'
-alias pacs='pacman --color always -Sl | sed -e "s: :/:; /installed/d" | cut -f 1 -d " " | fzf --multi --ansi --preview "pacman -Si {1}" | xargs -ro sudo pacman -S'
-alias pars='paru --color always -Sl | sed -e "s: :/:; /installed/d" | cut -f 1 -d " " | fzf --multi --ansi --preview "paru -Si {1}" | xargs -ro paru -S'
-alias pacq="pacman --color always -Q | cut -f 1 -d ' ' | fzf --multi --ansi --preview 'pacman -Qi {1}' | xargs -ro sudo pacman -Rns"
-alias paco="pacman -Qqdt | sudo pacman -Rns -"
-alias pacu="sudo pacman -Syu"
 alias gl='git clone --depth=1'
 alias dot='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias lazydot='lazygit --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
