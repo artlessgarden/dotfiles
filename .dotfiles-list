@@ -1,5 +1,5 @@
-.asoundrc
 .bashrc
+.bash_profile
 
 .config/chromium-flags.conf
 .config/cmus
@@ -29,5 +29,3 @@
 .gitconfig
 inbox.md
 .inputrc
-
-.local/bin
