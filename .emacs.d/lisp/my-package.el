@@ -244,6 +244,11 @@
   :config (setq idle-highlight-idle-time 0.2)
   :hook ((prog-mode text-mode) . idle-highlight-mode))
 
+;;npm -g path
+(add-to-list 'exec-path (expand-file-name "~/.local/share/npm/bin"))
+(setenv "PATH" (concat (expand-file-name "~/.local/share/npm/bin")
+                       path-separator
+                       (getenv "PATH")))
 (use-package eglot
   :hook ((prog-mode . eglot-ensure)
          (html-mode . eglot-ensure)
@@ -266,11 +271,11 @@
 
 (use-package web-mode
   :ensure t
+  :mode "\\.vue\\'"
   :config
   (setq web-mode-enable-auto-closing t)
   (setq web-mode-enable-auto-quoting t)
-  (setq web-mode-enable-auto-pairing t)
-  :mode ("\\.vue\\'" "\\.html\\'"))
+  (setq web-mode-enable-auto-pairing t))
 
 (use-package multiple-cursors
   :bind

@@ -56,3 +56,18 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (add-to-list 'custom-theme-load-path "~/.emacs.d/lisp")
+
+
+;;;大文件优化
+(setq-default bidi-paragraph-direction 'left-to-right)
+(setq bidi-inhibit-bpa t)
+(setq-default bidi-display-reordering nil)
+
+(setq long-line-threshold 1000)
+(setq large-hscroll-threshold 1000)
+(setq syntax-wholeline-max 1000)
+
+(global-so-long-mode 1)
+;; (setq-default cursor-in-non-selected-windows nil)
+;; (setq fast-but-imprecise-scrolling t)
+

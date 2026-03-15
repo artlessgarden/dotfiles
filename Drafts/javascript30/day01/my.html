@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>my JS Drum Kit</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div data-key="a">
+      <kbd>key A</kbd>
+    </div>
+    <script>
+      window.addEventListener("keydown", (event) => {
+        const elkey = document.querySelector(`div[data-key="${event.key}"]`);
+        console.log(event.key);
+        if (!elkey) console.log("stop");
+        else console.log(elkey);
+      });
+    </script>
+  </body>
+</html>

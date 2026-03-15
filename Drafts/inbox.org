@@ -1,0 +1,1 @@
+* npm install -g @vue/language-server prettier typescript-language-server typescript vscode-langservers-extracted
