@@ -77,12 +77,15 @@ spawn-at-startup "foot"
 spawn-at-startup "gnome-pomodoro"
 spawn-at-startup "mouseless"
 spawn-at-startup "sh" "-c" "wlsunset -l 29.5 -L 116"
-spawn-at-startup "sh" "-c" "swayidle -w  timeout 180 'swaylock -f -c 000000'  timeout 240 'niri msg action power-off-monitors'  resume 'niri msg action power-on-monitors'"
+spawn-at-startup "sh" "-c" "swayidle -w  timeout 180 'swaylock -f -i .config/niri/bg3.jpg'  timeout 240 'niri msg action power-off-monitors'  resume 'niri msg action power-on-monitors'"
 spawn-at-startup "sh" "-c" "dufs -A"
 spawn-at-startup "udiskie -a"
+spawn-at-startup "bash" "-c" "wl-paste --type text --watch cliphist store"
+spawn-at-startup "bash" "-c" "wl-paste --type image --watch cliphist store"
 
 binds {
-Mod+v { spawn "sh" "-c" "foot -e alsamixer -c 1"; }
+//Mod+v { spawn "sh" "-c" "foot -e alsamixer -c 1"; }
+Mod+V { spawn "sh" "-c" "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
 Mod+space repeat=false { spawn "sh" "-c" "wl-kbptr -o modes=floating,click -o mode_floating.source=detect"; }
 Mod+return repeat=false { spawn "fuzzel"; }
 Mod+s repeat=false { spawn "foot"; }
