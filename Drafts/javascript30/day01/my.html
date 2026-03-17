@@ -6,15 +6,24 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div data-key="a">
-      <kbd>key A</kbd>
+    <div class="keys">
+      <div data-key="a" class="key">
+        <kbd>A</kbd>
+        <audio data-key="a" src="boom.wav"></audio>
+      </div>
     </div>
+
     <script>
-      window.addEventListener("keydown", (event) => {
-        const elkey = document.querySelector(`div[data-key="${event.key}"]`);
-        console.log(event.key);
-        if (!elkey) console.log("stop");
-        else console.log(elkey);
+      window.addEventListener("keydown", (e) => {
+        console.log(`tap the ${e.key}`);
+        const elkey = document.querySelector(`div[data-key="${e.key}"]`);
+        const elaudio = document.querySelector(`audio[data-key="${e.key}"]`);
+        if (!elkey) console.log("not a difine key");
+        else {
+          console.log(elkey);
+          console.log(elaudio);
+          elkey.classList.add("playing");
+        }
       });
     </script>
   </body>

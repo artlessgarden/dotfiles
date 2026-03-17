@@ -13,7 +13,8 @@
   (vv-normal-mode 1)
   (vv-insert-mode -1)
   (sis-set-english)
-  (save-buffer))
+  ;; (save-buffer)
+  )
 
 (defun vv-to-insert ()
   (interactive)

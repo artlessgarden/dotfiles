@@ -67,7 +67,7 @@
 (setq large-hscroll-threshold 1000)
 (setq syntax-wholeline-max 1000)
 
-(global-so-long-mode 1)
+;;(global-so-long-mode 1)
 ;; (setq-default cursor-in-non-selected-windows nil)
 ;; (setq fast-but-imprecise-scrolling t)
 

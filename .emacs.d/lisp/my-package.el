@@ -214,11 +214,15 @@
   (setq popper-reference-buffers
         '("\\*Messages\\*"
           "\\*Warnings\\*"
-          "\\*scratch\\*"
+          ;; "\\*scratch\\*"
           "Output\\*$"
           "\\*Async Shell Command\\*"
           help-mode
-          compilation-mode))
+          compilation-mode
+          "^\\*EGLOT .*\\*$"
+          "\\*eldoc.*\\*"
+          "\\*Flymake diagnostics.*\\*"
+          "\\*xref\\*"))
   (popper-mode +1)
   (popper-echo-mode +1))                ; For echo area hints
 
@@ -249,17 +253,62 @@
 (setenv "PATH" (concat (expand-file-name "~/.local/share/npm/bin")
                        path-separator
                        (getenv "PATH")))
-(use-package eglot
-  :hook ((prog-mode . eglot-ensure)
-         (html-mode . eglot-ensure)
-         (web-mode . eglot-ensure))
+
+;; (defun my/web-mode-eglot-ensure ()
+;;   (when buffer-file-name
+;;     (setq-local eglot-server-programs
+;;                 (cond
+;;                  ((string-match-p "\\.vue\\'" buffer-file-name)
+;;                   '((web-mode . ("vue-language-server" "--stdio"))))
+;;                  ((string-match-p "\\.html?\\'" buffer-file-name)
+;;                   '((web-mode . ("vscode-html-language-server" "--stdio"))))))
+;;     (eglot-ensure)))
+;; (use-package eglot
+;;   :hook ((web-mode . my/web-mode-eglot-ensure)
+;;          (js-mode . eglot-ensure)
+;;          (js-ts-mode . eglot-ensure)
+;;          (typescript-mode . eglot-ensure)
+;;          (typescript-ts-mode . eglot-ensure)
+;;          (css-mode . eglot-ensure)
+;;          (css-ts-mode . eglot-ensure))
+;;   :config
+;;   (setq eglot-ignored-server-capabilities
+;;         '(:documentOnTypeFormattingProvider
+;;           :inlayHintProvider))  
+;;   (setq eglot-events-buffer-size 0)
+;;   (setq completion-category-defaults nil)
+;;   (setq completion-category-overrides '((eglot (styles orderless)))))
+(use-package lsp-mode
+  :ensure t
+  :commands lsp
+  :hook ((js-mode . lsp)
+         (js-ts-mode . lsp)
+         (typescript-mode . lsp)
+         (typescript-ts-mode . lsp)
+         (web-mode . lsp)
+         (css-mode . lsp)
+         (css-ts-mode . lsp))
+  :custom
+  (lsp-keymap-prefix "C-c l")
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-enable-symbol-highlighting t)
+  (lsp-enable-on-type-formatting nil)
+  (lsp-idle-delay 0.8)
+  (lsp-log-io nil)
   :config
-  
-  (add-to-list 'eglot-server-programs
-               '(web-mode . ("vue-language-server" "--stdio")))
-  (setq eglot-events-buffer-size 0)
-  (setq completion-category-defaults nil)
-  (setq completion-category-overrides '((eglot (styles orderless)))))
+  (setq lsp-completion-provider :capf))
+(use-package lsp-ui
+  :ensure t
+  :after lsp-mode
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-show-with-cursor t)
+  (lsp-ui-doc-show-with-mouse nil)
+  (lsp-ui-doc-delay 0.8)
+  (lsp-ui-sideline-enable nil)
+  (lsp-ui-doc-position 'at-point)
+  )
 
 (use-package treesit-auto
   :ensure t
@@ -271,11 +320,14 @@
 
 (use-package web-mode
   :ensure t
-  :mode "\\.vue\\'"
+  :mode ("\\.vue\\'" "\\.html?\\'")
   :config
   (setq web-mode-enable-auto-closing t)
   (setq web-mode-enable-auto-quoting t)
-  (setq web-mode-enable-auto-pairing t))
+  (setq web-mode-enable-auto-pairing t)
+  (setq web-mode-content-types-alist
+        '(("vue" . "\\.vue\\'"))))
+
 
 (use-package multiple-cursors
   :bind
@@ -288,6 +340,7 @@
   (global-corfu-mode) ;; 全局开启
   (corfu-popupinfo-mode)
   :custom
+  (corfu-auto-prefix 2) ;; 打2个字母才弹
   (corfu-auto t)                 ;; 自动弹出，不用按键
   (corfu-cycle t)                ;; 列表循环
   (corfu-quit-no-match 'separator) ;; 没匹配时自动退出，不挡视线
@@ -297,7 +350,17 @@
         ("TAB" . corfu-next)     ;; TAB 往下选 (习惯问题，可选)
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
-        ([backtab] . corfu-previous)))
+        ([backtab] . corfu-previous)
+        ("RET" . nil)
+        ("<return>" . nil)
+        ("C-n" . nil)
+        ("C-p" . nil)
+        ("<down>" . nil)
+        ("<up>" . nil)
+        ([remap previous-line] . nil)
+        ([remap next-line] . nil)
+        ))
+
 (use-package cape
   :init
   (add-to-list 'completion-at-point-functions #'cape-file)
@@ -333,6 +396,112 @@
   :ensure t
   :config
   (apheleia-global-mode +1))
+
+(use-package emmet-mode
+  :config
+  (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+  (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+  )
+
+(use-package vterm
+  :ensure t)
+(use-package vterm-toggle
+  :config
+  (global-set-key [f2] 'vterm-toggle)
+  (global-set-key [C-f2] 'vterm-toggle-cd)
+
+  ;; you can cd to the directory where your previous buffer file exists
+  ;; after you have toggle to the vterm buffer with `vterm-toggle'.
+  (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
+
+                                        ;Switch to next vterm buffer
+  (define-key vterm-mode-map (kbd "s-n")   'vterm-toggle-forward)
+                                        ;Switch to previous vterm buffer
+  (define-key vterm-mode-map (kbd "s-p")   'vterm-toggle-backward)
+
+  (setq vterm-toggle-fullscreen-p nil)
+  (add-to-list 'display-buffer-alist
+               '((lambda (buffer-or-name _)
+                   (let ((buffer (get-buffer buffer-or-name)))
+                     (with-current-buffer buffer
+                       (or (equal major-mode 'vterm-mode)
+                           (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 ;;(display-buffer-reuse-window display-buffer-in-direction)
+                 ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                 ;;(direction . bottom)
+                 ;;(dedicated . t) ;dedicated is supported in emacs27
+                 (reusable-frames . visible)
+                 (window-height . 0.3)))
+  )
+
+(use-package dired-sidebar
+  :ensure t
+  :commands (dired-sidebar-toggle-sidebar)
+  :init
+  (add-hook 'dired-sidebar-mode-hook
+            (lambda ()
+              (unless (file-remote-p default-directory)
+                (auto-revert-mode))))
+  :config
+  (global-set-key [f8] 'dired-sidebar-toggle-sidebar)
+  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
+  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
+
+  (setq dired-sidebar-subtree-line-prefix "__")
+  (setq dired-sidebar-theme 'vscode)
+  (setq dired-sidebar-use-term-integration t)
+  (setq dired-sidebar-use-custom-font t))
+
+;; (use-package nerd-icons
+;;   :custom
+;;   (nerd-icons-font-family "Symbols Nerd Font Mono")
+;;   )
+;; (use-package dirvish
+;;   :config
+;;   (dirvish-override-dired-mode)
+;;   (add-hook 'window-setup-hook
+;;             (lambda ()
+;;               (delete-other-windows)
+;;               (select-window (frame-root-window))
+;;               (dirvish "~")))
+;;   (dirvish-peek-mode)
+;;   (dirvish-side-follow-mode)
+;;   (setq dirvish-attributes
+;;         '(vc-state file-size git-msg subtree-state nerd-icons collapse file-time))
+;;   (setq dirvish-mode-line-format '(:left (sort symlink) :right (vc-info yank index)))
+;;   (setq dirvish-header-line-height '(25 . 35))
+;;   (setq dirvish-side-width 38)
+;;   (setq dirvish-header-line-format '(:left (path) :right (free-space)))
+;;   (bind-keys ("C-c f" . dirvish-fd)
+;;              :map 'dirvish-mode-map
+;;              ;; left click for expand/collapse dir or open file
+;;              ("<mouse-1>" . dirvish-subtree-toggle-or-open)
+;;              ;; middle click for opening file / entering dir in other window
+;;              ("<mouse-2>" . dired-mouse-find-file-other-window)
+;;              ;; right click for opening file / entering dir
+;;              ("<mouse-3>" . dired-mouse-find-file)
+;;              ([remap dired-sort-toggle-or-edit] . dirvish-quicksort)
+;;              ([remap dired-do-redisplay] . dirvish-ls-switches-menu)
+;;              ([remap dired-do-copy] . dirvish-yank-menu)
+;;              ("?"   . dirvish-dispatch)
+;;              ("q"   . dirvish-quit)
+;;              ("a"   . dirvish-quick-access)
+;;              ("f"   . dirvish-file-info-menu)
+;;              ("x"   . dired-do-delete)
+;;              ("X"   . dired-do-flagged-delete)
+;;              ("y"   . dirvish-yank-menu)
+;;              ("s"   . dirvish-quicksort)
+;;              ("TAB" . dirvish-subtree-toggle)
+;;              ("M-t" . dirvish-layout-toggle)
+;;              ("M-b" . dirvish-history-go-backward)
+;;              ("M-f" . dirvish-history-go-forward)
+;;              ("M-n" . dirvish-narrow)
+;;              ("M-m" . dirvish-mark-menu)
+;;              ("M-s" . dirvish-setup-menu)
+;;              ("M-e" . dirvish-emerge-menu))
+;;   )
+
 
 
 (provide 'my-package)

@@ -6,19 +6,54 @@ input {
     workspace-auto-back-and-forth
 }
 layout {
-    gaps 0
     preset-column-widths { proportion 0.382; proportion 0.618;proportion 1.0; }
     default-column-width { proportion 0.618; }
-    focus-ring { off; }
     background-color "transparent"
     always-center-single-column
+
+    focus-ring {
+        off
+        //on
+        width 4
+        active-color "wheat"
+        // inactive-color "#505050"
+        urgent-color "pink"
+        // active-gradient from="#80c8ff" to="#bbddff" angle=45
+        // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
+        // urgent-gradient from="#800" to="#a33" angle=45
+    }
+    shadow {
+        // off
+        on
+        softness 30
+        spread 5
+        offset x=0 y=5
+        draw-behind-window true
+        color "#000000ff"
+        inactive-color "#00000054"
+    }
+    
+    insert-hint {
+        // off
+        on
+        color "#ffc87f80"
+        // gradient from="#ffbb6680" to="#ffc88080" angle=45 relative-to="workspace-view"
+    }
+
+    gaps 24
+    struts {
+        left 32
+        right 32
+        top 32
+        bottom 32
+    }
 }
+
 gestures { hot-corners { off; };}
 animations { off ;}
 
 output "HDMI-A-1" {
     scale 1
-    focus-at-startup
     mode "1920x1080@100.000"
     }
 output "eDP-1" {
@@ -28,10 +63,9 @@ output "eDP-1" {
 output "DP-1" {
         scale 1
         mode "2560x1440@60.011"
+        // mode "3840x2160@59.940"
         position x=0 y=0
         focus-at-startup
-        // mode "3840x2160@59.940"
-    // mode "3840x2160@30.000"
 }
 
 // Make the wallpaper stationary, rather than moving with workspaces.
@@ -67,8 +101,8 @@ prefer-no-csd
 hotkey-overlay { skip-at-startup; }
 //cursor { hide-when-typing; hide-after-inactive-ms 5000; }
 screenshot-path null
-window-rule { match is-focused=true; opacity 0.9; }
-window-rule { match is-focused=false; opacity 0.75; }
+//window-rule { match is-focused=true; opacity 0.9; }
+//window-rule { match is-focused=false; opacity 0.75; }
 window-rule { open-floating false; }
 
 spawn-at-startup "sh" "-c" "fcitx5 -d"
@@ -85,7 +119,7 @@ spawn-at-startup "bash" "-c" "wl-paste --type image --watch cliphist store"
 
 binds {
 //Mod+v { spawn "sh" "-c" "foot -e alsamixer -c 1"; }
-Mod+V { spawn "sh" "-c" "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
+Mod+V { spawn "sh" "-c" ".local/bin/cliphist-fuzzel-img"; }
 Mod+space repeat=false { spawn "sh" "-c" "wl-kbptr -o modes=floating,click -o mode_floating.source=detect"; }
 Mod+return repeat=false { spawn "fuzzel"; }
 Mod+s repeat=false { spawn "foot"; }

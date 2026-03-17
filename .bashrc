@@ -73,6 +73,8 @@ shopt -s checkwinsize
 ####################################################
 alias vim='nvim'
 alias ld='ls -Alh --color=auto'
+alias cx='chmod +x'
+
 alias gl='git clone --depth=1'
 alias dot='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias lazydot='lazygit --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
@@ -204,3 +206,4 @@ d() {
 fastfetch
 
 export PATH="$HOME/.local/share/npm/bin:$PATH"
+

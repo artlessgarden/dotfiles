@@ -38,7 +38,7 @@
 (setq scroll-margin 2)             ; 顶部/底部预留2行
 (setq scroll-step 1)               ; 每次滚动一行
 (setq redisplay-dont-pause t)
-;; (electric-pair-mode 0)
+(electric-pair-mode 1)
 ;; (show-paren-mode 1)
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
@@ -70,9 +70,10 @@
 ;;dired
 (setq dired-kill-when-opening-new-dired-buffer t)
 ;; (add-hook 'dired-mode-hook #'dired-hide-details-mode)
-(setq dired-listing-switches "-alh")
+(setq dired-listing-switches "-alh --no-group")
 (add-hook 'dired-mode-hook 'auto-revert-mode)
 (setq dired-dwim-target t) ;当两个 dired 窗口打开时，自动从一个位置复制到另一个位置
+(put 'dired-find-alternate-file 'disabled nil)
 
 
 (use-package dabbrev
@@ -208,3 +209,43 @@
   (setq howm-file-name-format "%Y-%m-%d.org")
   (add-hook 'org-mode-hook 'howm-mode)
   )
+
+;; (use-package minimal-dashboard
+;;   :hook (minimal-dashboard-mode-hook . (lambda () (display-line-numbers-mode 0)))
+;;   :init
+;;   (setq initial-buffer-choice #'minimal-dashboard) ;; set initial buffer as dashboard
+;;   :custom
+;;   (minimal-dashboard-buffer-name "Dashboard")
+;;   ;; (minimal-dashboard-buffer-name #'some-func-that-returns-a-string)
+
+;;   (minimal-dashboard-image-path "~/.config/emacs/logo.svg") ;; path to image
+;;   ;; (minimal-dashboard-image-path #'some-func-that-returns-a-valid-image-path)
+
+;;   (minimal-dashboard-text "Welcome to Emacs") ;; plain text
+
+;;   ;; You can have function returning a string as well
+;;   (minimal-dashboard-text (lambda () (format "started in %s" (emacs-init-time))))
+
+;;   ;; Multi-line text (with center alignment) is also supported
+;;   ;; (minimal-dashboard-text "My multiline\nstring is here")
+
+;;   ;; Click support for image
+;;   ;; (minimal-dashboard-image-click-handler
+;;   ;;   (lambda (event)
+;;   ;;     (pcase (event-basic-type event)
+;;   ;;       ('mouse-1 (message "Left click on image"))
+;;   ;;       ('mouse-2 (message "Middle click on image"))
+;;   ;;       ('mouse-3 (message "Right click on image")))))
+
+;;   ;; Click support for text
+;;   ;; (minimal-dashboard-text-click-handler
+;;   ;;   (lambda (event)
+;;   ;;     (pcase (event-basic-type event)
+;;   ;;       ('mouse-1 (message "Left click on text"))
+;;   ;;       ('mouse-2 (message "Middle click on text"))
+;;   ;;       ('mouse-3 (message "Right click on text")))))
+;;   (minimal-dashboard-image-scale 1.25)
+;;   (minimal-dashboard-enable-resize-handling t) ;; to refresh when buffer is resized
+;;   (minimal-dashboard-modeline-shown nil) ;; visibility of the modeline
+;;   )
+
