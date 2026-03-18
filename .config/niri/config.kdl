@@ -12,8 +12,8 @@ layout {
     always-center-single-column
 
     focus-ring {
-        off
-        //on
+        //off
+        on
         width 4
         active-color "wheat"
         // inactive-color "#505050"
@@ -42,10 +42,10 @@ layout {
 
     gaps 24
     struts {
-        left 32
-        right 32
-        top 32
-        bottom 32
+        left 0
+        right 0
+        top 0
+        bottom 0
     }
 }
 
@@ -112,7 +112,7 @@ spawn-at-startup "gnome-pomodoro"
 spawn-at-startup "mouseless"
 spawn-at-startup "sh" "-c" "wlsunset -l 29.5 -L 116"
 spawn-at-startup "sh" "-c" "swayidle -w  timeout 180 'swaylock -f -i .config/niri/bg3.jpg'  timeout 240 'niri msg action power-off-monitors'  resume 'niri msg action power-on-monitors'"
-spawn-at-startup "sh" "-c" "dufs -A"
+//spawn-at-startup "sh" "-c" "dufs -A"
 spawn-at-startup "udiskie -a"
 spawn-at-startup "bash" "-c" "wl-paste --type text --watch cliphist store"
 spawn-at-startup "bash" "-c" "wl-paste --type image --watch cliphist store"

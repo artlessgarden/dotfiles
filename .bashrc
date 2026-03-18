@@ -207,3 +207,16 @@ fastfetch
 
 export PATH="$HOME/.local/share/npm/bin:$PATH"
 
+url2ip() {
+  local host ip
+  host=$(echo "$1" | awk -F/ '{print $3 ? $3 : $1}')
+  ip=$(getent ahosts "$host" | awk '/STREAM/ {print $1}' | grep -E '^[0-9.]+$' | sort -u | head -n1)
+
+  if [ -z "$ip" ]; then
+    echo "❌ 未解析到 IPv4"
+    return 1
+  fi
+
+  echo "$ip" | wl-copy
+  echo "✅ $host -> $ip (已复制)"
+}

@@ -12,19 +12,6 @@
         <audio data-key="a" src="boom.wav"></audio>
       </div>
     </div>
-
-    <script>
-      window.addEventListener("keydown", (e) => {
-        console.log(`tap the ${e.key}`);
-        const elkey = document.querySelector(`div[data-key="${e.key}"]`);
-        const elaudio = document.querySelector(`audio[data-key="${e.key}"]`);
-        if (!elkey) console.log("not a difine key");
-        else {
-          console.log(elkey);
-          console.log(elaudio);
-          elkey.classList.add("playing");
-        }
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
