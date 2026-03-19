@@ -220,4 +220,20 @@ url2ip() {
   echo "$ip" | wl-copy
   echo "✅ $host -> $ip (已复制)"
 }
-. "/home/xiang/.acme.sh/acme.sh.env"
+
+############################################################################
+# foot
+prompt_marker() {
+    printf '\e]133;A\e\\'
+}
+PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }prompt_marker
+
+# foot shell integration
+PS0+=$'\e]133;C\e\\'
+
+command_done() {
+    printf '\e]133;D\e\\'
+}
+
+PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }command_done
+

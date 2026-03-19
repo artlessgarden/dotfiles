@@ -130,6 +130,7 @@ Mod+s repeat=false { spawn "foot"; }
 Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
 Mod+f repeat=false { spawn "helium-browser"; }
 Mod+x repeat=false { spawn "google-chrome-stable"; }
+Mod+slash repeat=false { spawn "sh" "-c" "google-chrome-stable --new-window https://chatgpt.com/g/g-p-696212589cc48191a743ef02c21f7a54-yun-wei-zhu-shou/project"; }
 Mod+z repeat=false { spawn "Telegram"; }
 Mod+p repeat=false { screenshot-screen; }
 Mod+q repeat=false { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy --type image/png && wl-paste --type image/png | swappy -f -"; }
