@@ -1,0 +1,10 @@
+[Unit]
+Description=Caddy
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/caddy run --config /home/xiang/Caddyfile
+Restart=always
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Dufs File Server
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/dufs -A
+Restart=always
+
+[Install]
+WantedBy=default.target

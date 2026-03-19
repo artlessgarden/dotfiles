@@ -48,6 +48,7 @@
      '("e" . meow-next-word)
      '("E" . meow-next-symbol)
      '("f" . meow-find)
+     '("F" . link-hint-open-link)
      '("g" . meow-cancel-selection)
      '("G" . meow-grab)
      '("h" . meow-left)
@@ -92,5 +93,6 @@
 
 (add-hook 'meow-insert-exit-hook #'sis-set-english)
 (add-to-list 'sis-context-hooks 'meow-insert-enter-hook)
+
 
 (provide 'my-meow)

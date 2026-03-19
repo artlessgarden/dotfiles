@@ -181,9 +181,6 @@
 (use-package avy)
 
 (use-package link-hint
-  :bind
-  ("C-c l o" . link-hint-open-link)
-  ("C-c l c" . link-hint-copy-link)
   :config
   (setq browse-url-generic-args '("--target" "window"))
   )

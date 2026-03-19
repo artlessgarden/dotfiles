@@ -1,0 +1,8 @@
+{
+	auto_https disable_redirects
+}
+
+https://localhost:8001 {
+	tls internal
+	reverse_proxy localhost:8000
+}

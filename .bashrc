@@ -220,3 +220,4 @@ url2ip() {
   echo "$ip" | wl-copy
   echo "✅ $host -> $ip (已复制)"
 }
+. "/home/xiang/.acme.sh/acme.sh.env"

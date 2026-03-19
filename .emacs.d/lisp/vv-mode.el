@@ -474,6 +474,7 @@
 (define-key vv-normal-map (kbd "Z z q") 'save-buffers-kill-emacs)
 (define-key vv-normal-map (kbd "o") 'other-window)
 
+(define-key vv-normal-map (kbd "F") #'link-hint-open-link)
 
 
 (define-minor-mode vv-normal-mode

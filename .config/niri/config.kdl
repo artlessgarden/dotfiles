@@ -116,6 +116,10 @@ spawn-at-startup "sh" "-c" "swayidle -w  timeout 180 'swaylock -f -i .config/nir
 spawn-at-startup "udiskie -a"
 spawn-at-startup "bash" "-c" "wl-paste --type text --watch cliphist store"
 spawn-at-startup "bash" "-c" "wl-paste --type image --watch cliphist store"
+spawn-at-startup "bash" "-c" "
+dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XDG_RUNTIME_DIR DISPLAY NIRI_SOCKET;
+systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XDG_RUNTIME_DIR DISPLAY NIRI_SOCKET
+"
 
 binds {
 //Mod+v { spawn "sh" "-c" "foot -e alsamixer -c 1"; }
@@ -124,8 +128,8 @@ Mod+space repeat=false { spawn "sh" "-c" "wl-kbptr -o modes=floating,click -o mo
 Mod+return repeat=false { spawn "fuzzel"; }
 Mod+s repeat=false { spawn "foot"; }
 Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
-Mod+f repeat=false { spawn "firefox"; }
-Mod+x repeat=false { spawn "helium-browser"; }
+Mod+f repeat=false { spawn "helium-browser"; }
+Mod+x repeat=false { spawn "google-chrome-stable"; }
 Mod+z repeat=false { spawn "Telegram"; }
 Mod+p repeat=false { screenshot-screen; }
 Mod+q repeat=false { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy --type image/png && wl-paste --type image/png | swappy -f -"; }

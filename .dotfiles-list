@@ -19,7 +19,13 @@
 .config/surfingkeys.js
 .config/wl-kbptr
 .config/yazi
+.config/xdg-desktop-portal
+.config/xdg-desktop-portal-termfilechooser
+.config/systemd/user/caddy.service
+.config/systemd/user/dufs.service
+.config/systemd/user/vaultwarden.service
 
+Caddyfile
 .dotfiles-list
 
 .emacs.d/early-init.el

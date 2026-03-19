@@ -100,8 +100,9 @@
 (setq org-confirm-babel-evaluate nil)
 
 (which-key-mode 1)
+
 ;;; manual package
-(require 'vv-mode)
+;; (require 'vv-mode)
 
 ;; package init
 (setq gnutls-use-ipv6 nil)
@@ -117,7 +118,7 @@
 
 
 (require 'my-package)
-;; (require 'my-meow)
+(require 'my-meow)
 
 
 (require 'bracket-content-flash)
@@ -204,48 +205,5 @@
 (setq org-return-follow-link t)
 
 
-(use-package howm
-  :config
-  (setq howm-file-name-format "%Y-%m-%d.org")
-  (add-hook 'org-mode-hook 'howm-mode)
-  )
-
-;; (use-package minimal-dashboard
-;;   :hook (minimal-dashboard-mode-hook . (lambda () (display-line-numbers-mode 0)))
-;;   :init
-;;   (setq initial-buffer-choice #'minimal-dashboard) ;; set initial buffer as dashboard
-;;   :custom
-;;   (minimal-dashboard-buffer-name "Dashboard")
-;;   ;; (minimal-dashboard-buffer-name #'some-func-that-returns-a-string)
-
-;;   (minimal-dashboard-image-path "~/.config/emacs/logo.svg") ;; path to image
-;;   ;; (minimal-dashboard-image-path #'some-func-that-returns-a-valid-image-path)
-
-;;   (minimal-dashboard-text "Welcome to Emacs") ;; plain text
-
-;;   ;; You can have function returning a string as well
-;;   (minimal-dashboard-text (lambda () (format "started in %s" (emacs-init-time))))
-
-;;   ;; Multi-line text (with center alignment) is also supported
-;;   ;; (minimal-dashboard-text "My multiline\nstring is here")
-
-;;   ;; Click support for image
-;;   ;; (minimal-dashboard-image-click-handler
-;;   ;;   (lambda (event)
-;;   ;;     (pcase (event-basic-type event)
-;;   ;;       ('mouse-1 (message "Left click on image"))
-;;   ;;       ('mouse-2 (message "Middle click on image"))
-;;   ;;       ('mouse-3 (message "Right click on image")))))
-
-;;   ;; Click support for text
-;;   ;; (minimal-dashboard-text-click-handler
-;;   ;;   (lambda (event)
-;;   ;;     (pcase (event-basic-type event)
-;;   ;;       ('mouse-1 (message "Left click on text"))
-;;   ;;       ('mouse-2 (message "Middle click on text"))
-;;   ;;       ('mouse-3 (message "Right click on text")))))
-;;   (minimal-dashboard-image-scale 1.25)
-;;   (minimal-dashboard-enable-resize-handling t) ;; to refresh when buffer is resized
-;;   (minimal-dashboard-modeline-shown nil) ;; visibility of the modeline
-;;   )
-
+(custom-set-faces
+ '(cursor ((t (:background "orange")))))
