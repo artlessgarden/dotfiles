@@ -1,30 +1,3 @@
-(use-package ef-themes
-  :ensure t
-  :init
-  ;; This makes the Modus commands listed below consider only the Ef
-  ;; themes.  For an alternative that includes Modus and all
-  ;; derivative themes (like Ef), enable the
-  ;; `modus-themes-include-derivatives-mode' instead.  The manual of
-  ;; the Ef themes has a section that explains all the possibilities:
-  ;;
-  ;; - Evaluate `(info "(ef-themes) Working with other Modus themes or taking over Modus")'
-  ;; - Visit <https://protesilaos.com/emacs/ef-themes#h:6585235a-5219-4f78-9dd5-6a64d87d1b6e>
-  (ef-themes-take-over-modus-themes-mode 1)
-  :bind
-  (("<f5>" . modus-themes-rotate)
-   ("C-<f5>" . modus-themes-select)
-   ("M-<f5>" . modus-themes-load-random))
-  :config
-  ;; All customisations here.
-  (setq modus-themes-mixed-fonts t)
-  (setq modus-themes-italic-constructs t)
-  (setq ef-themes-to-toggle '(ef-maris-light ef-maris-dark))
-  ;; Finally, load your theme of choice (or a random one with
-  ;; `modus-themes-load-random', `modus-themes-load-random-dark',
-  ;; `modus-themes-load-random-light').
-  (modus-themes-load-theme 'ef-summer))
-
-
 
 ;; Example configuration for Consult
 (use-package consult
@@ -279,61 +252,63 @@
                        path-separator
                        (getenv "PATH")))
 
-;; (defun my/web-mode-eglot-ensure ()
-;;   (when buffer-file-name
-;;     (setq-local eglot-server-programs
-;;                 (cond
-;;                  ((string-match-p "\\.vue\\'" buffer-file-name)
-;;                   '((web-mode . ("vue-language-server" "--stdio"))))
-;;                  ((string-match-p "\\.html?\\'" buffer-file-name)
-;;                   '((web-mode . ("vscode-html-language-server" "--stdio"))))))
-;;     (eglot-ensure)))
-;; (use-package eglot
-;;   :hook ((web-mode . my/web-mode-eglot-ensure)
-;;          (js-mode . eglot-ensure)
-;;          (js-ts-mode . eglot-ensure)
-;;          (typescript-mode . eglot-ensure)
-;;          (typescript-ts-mode . eglot-ensure)
-;;          (css-mode . eglot-ensure)
-;;          (css-ts-mode . eglot-ensure))
-;;   :config
-;;   (setq eglot-ignored-server-capabilities
-;;         '(:documentOnTypeFormattingProvider
-;;           :inlayHintProvider))  
-;;   (setq eglot-events-buffer-size 0)
-;;   (setq completion-category-defaults nil)
-;;   (setq completion-category-overrides '((eglot (styles orderless)))))
-(use-package lsp-mode
-  :ensure t
-  :commands lsp
-  :hook ((js-mode . lsp)
-         (js-ts-mode . lsp)
-         (typescript-mode . lsp)
-         (typescript-ts-mode . lsp)
-         (web-mode . lsp)
-         (css-mode . lsp)
-         (css-ts-mode . lsp))
-  :custom
-  (lsp-keymap-prefix "C-c l")
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-enable-symbol-highlighting t)
-  (lsp-enable-on-type-formatting nil)
-  (lsp-idle-delay 0.8)
-  (lsp-log-io nil)
+(defun my/web-mode-eglot-ensure ()
+  (when buffer-file-name
+    (setq-local eglot-server-programs
+                (cond
+                 ((string-match-p "\\.vue\\'" buffer-file-name)
+                  '((web-mode . ("vue-language-server" "--stdio"))))
+                 ((string-match-p "\\.html?\\'" buffer-file-name)
+                  '((web-mode . ("vscode-html-language-server" "--stdio"))))))
+    (eglot-ensure)))
+(use-package eglot
+  :hook ((web-mode . my/web-mode-eglot-ensure)
+         (js-mode . eglot-ensure)
+         (js-ts-mode . eglot-ensure)
+         (typescript-mode . eglot-ensure)
+         (typescript-ts-mode . eglot-ensure)
+         (css-mode . eglot-ensure)
+         (css-ts-mode . eglot-ensure))
   :config
-  (setq lsp-completion-provider :capf))
-(use-package lsp-ui
-  :ensure t
-  :after lsp-mode
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-enable t)
-  (lsp-ui-doc-show-with-cursor t)
-  (lsp-ui-doc-show-with-mouse nil)
-  (lsp-ui-doc-delay 0.8)
-  (lsp-ui-sideline-enable nil)
-  (lsp-ui-doc-position 'at-point)
+  (setq eglot-ignored-server-capabilities
+        '(:documentOnTypeFormattingProvider
+          :inlayHintProvider))  
+  (setq eglot-events-buffer-size 0)
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrides '((eglot (styles orderless))))
   )
+
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :commands lsp
+;;   :hook ((js-mode . lsp)
+;;          (js-ts-mode . lsp)
+;;          (typescript-mode . lsp)
+;;          (typescript-ts-mode . lsp)
+;;          (web-mode . lsp)
+;;          (css-mode . lsp)
+;;          (css-ts-mode . lsp))
+;;   :custom
+;;   (lsp-keymap-prefix "C-c l")
+;;   (lsp-headerline-breadcrumb-enable nil)
+;;   (lsp-enable-symbol-highlighting t)
+;;   (lsp-enable-on-type-formatting nil)
+;;   (lsp-idle-delay 0.8)
+;;   (lsp-log-io nil)
+;;   :config
+;;   (setq lsp-completion-provider :capf))
+;; (use-package lsp-ui
+;;   :ensure t
+;;   :after lsp-mode
+;;   :hook (lsp-mode . lsp-ui-mode)
+;;   :custom
+;;   (lsp-ui-doc-enable t)
+;;   (lsp-ui-doc-show-with-cursor t)
+;;   (lsp-ui-doc-show-with-mouse nil)
+;;   (lsp-ui-doc-delay 0.8)
+;;   (lsp-ui-sideline-enable nil)
+;;   (lsp-ui-doc-position 'at-point)
+;;   )
 
 (use-package treesit-auto
   :ensure t
@@ -418,7 +393,6 @@
 ;;   (global-set-key (kbd "C-x w") #'elfeed))
 
 (use-package apheleia
-  :ensure t
   :config
   (apheleia-global-mode +1))
 
@@ -428,8 +402,7 @@
   (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
   )
 
-(use-package vterm
-  :ensure t)
+(use-package vterm)
 (use-package vterm-toggle
   :config
   (global-set-key [f2] 'vterm-toggle)

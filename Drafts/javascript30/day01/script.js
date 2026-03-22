@@ -1,4 +1,3 @@
-
 window.addEventListener("keydown", (e) => {
     console.log(`tap the ${e.key}`);
     const elkey = document.querySelector(`div[data-key="${e.key}"]`);
@@ -8,9 +7,12 @@ window.addEventListener("keydown", (e) => {
         console.log(elkey);
         console.log(elaudio);
         elkey.classList.add("playing");
+        elaudio.currentTime = 0;
+        elaudio.play();
     }
 });
 window.addEventListener("keyup", (e) => {
     const elkey = document.querySelector(`div[data-key="${e.key}"]`);
-    elkey.classList.remove("playing");
+    if (!elkey);
+    else elkey.classList.remove("playing");
 });

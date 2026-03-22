@@ -204,7 +204,7 @@ d() {
 [ "$(tty)" = "/dev/tty1" ] && exec niri-session
 
 fastfetch
-
+timedatectl
 export PATH="$HOME/.local/share/npm/bin:$PATH"
 
 url2ip() {
@@ -237,3 +237,5 @@ command_done() {
 
 PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }command_done
 
+export EDITOR=nvim
+export VISUAL=nvim

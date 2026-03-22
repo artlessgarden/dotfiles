@@ -88,6 +88,7 @@
   :config
   (meow-setup)
   (meow-global-mode 1)
+  (meow-setup-indicator)
   
   )
 

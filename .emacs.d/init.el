@@ -205,5 +205,5 @@
 (setq org-return-follow-link t)
 
 
-(custom-set-faces
- '(cursor ((t (:background "orange")))))
+;; (custom-set-faces
+;;  '(cursor ((t (:background "orange")))))

@@ -110,7 +110,7 @@ spawn-at-startup "sh" "-c" "swaybg -m fill -i ~/.config/niri/bg1.jpg"
 spawn-at-startup "foot"
 spawn-at-startup "gnome-pomodoro"
 spawn-at-startup "mouseless"
-spawn-at-startup "sh" "-c" "wlsunset -l 29.5 -L 116"
+spawn-at-startup "sh" "-c" "wlsunset -l 19.5 -L 99.5"
 spawn-at-startup "sh" "-c" "swayidle -w  timeout 180 'swaylock -f -i .config/niri/bg3.jpg'  timeout 240 'niri msg action power-off-monitors'  resume 'niri msg action power-on-monitors'"
 //spawn-at-startup "sh" "-c" "dufs -A"
 spawn-at-startup "udiskie -a"
@@ -130,9 +130,8 @@ Mod+s repeat=false { spawn "foot"; }
 Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
 Mod+f repeat=false { spawn "helium-browser"; }
 Mod+x repeat=false { spawn "google-chrome-stable"; }
-Mod+slash repeat=false { spawn "sh" "-c" "google-chrome-stable --new-window https://chatgpt.com/g/g-p-696212589cc48191a743ef02c21f7a54-yun-wei-zhu-shou/project"; }
 Mod+z repeat=false { spawn "Telegram"; }
-Mod+p repeat=false { screenshot-screen; }
+Mod+p repeat=false { spawn "sh" "-c" "grim - | wl-copy --type image/png && wl-paste --type image/png | swappy -f -"; }
 Mod+q repeat=false { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy --type image/png && wl-paste --type image/png | swappy -f -"; }
 Mod+c repeat=false { toggle-overview; }
 Mod+w repeat=false { close-window; }
@@ -141,7 +140,9 @@ Mod+e { toggle-window-rule-opacity; }
 Mod+r { switch-preset-column-width; }
 Mod+Escape repeat=false { power-off-monitors; }
 Mod+a { fullscreen-window; }
-
+    Mod+tab {
+        spawn "~/.local/bin/theme-toggle"
+    }
 Mod+j  cooldown-ms=70   { focus-column-left; }
 Mod+L  cooldown-ms=70   { focus-column-right; }
 Mod+i  cooldown-ms=70   { focus-window-or-workspace-up; }
