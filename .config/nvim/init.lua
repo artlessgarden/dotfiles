@@ -13,9 +13,17 @@ vim.g.mapleader = vim.keycode(" ")
 vim.opt.wildignore:append({ "*.o", "*.a", "*.class", ".cache/*" })
 vim.opt.wildignorecase = true
 
-vim.o.number = true
-vim.o.tabstop = 4
-vim.o.shiftwidth = 4
+--vim.o.number = true
+vim.o.expandtab = true -- tab 转空格
+vim.opt.list = true
+vim.opt.listchars = {
+	space = "·", -- 空格显示为点
+	tab = "» ", -- tab 显示
+	trail = "·", -- 行尾空格
+}
+vim.o.tabstop = 4 -- tab 显示为 4 空格
+vim.o.shiftwidth = 4 -- 自动缩进 4
+vim.o.softtabstop = 4 -- 按 tab 插入 4 空格
 vim.o.smartcase = true
 vim.o.ignorecase = true
 vim.o.hlsearch = true

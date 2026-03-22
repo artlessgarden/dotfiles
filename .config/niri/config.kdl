@@ -127,7 +127,7 @@ Mod+V { spawn "sh" "-c" ".local/bin/cliphist-fuzzel-img"; }
 Mod+space repeat=false { spawn "sh" "-c" "wl-kbptr -o modes=floating,click -o mode_floating.source=detect"; }
 Mod+return repeat=false { spawn "fuzzel"; }
 Mod+s repeat=false { spawn "foot"; }
-Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
+//Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
 Mod+f repeat=false { spawn "helium-browser"; }
 Mod+x repeat=false { spawn "google-chrome-stable"; }
 Mod+z repeat=false { spawn "Telegram"; }
