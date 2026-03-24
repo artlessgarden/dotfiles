@@ -89,7 +89,7 @@
   (meow-setup)
   (meow-global-mode 1)
   (meow-setup-indicator)
-  
+  (setf meow-expand-hint-remove-delay 0)  
   )
 
 (add-hook 'meow-insert-exit-hook #'sis-set-english)

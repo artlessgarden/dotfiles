@@ -127,7 +127,7 @@ Mod+V { spawn "sh" "-c" ".local/bin/cliphist-fuzzel-img"; }
 Mod+space repeat=false { spawn "sh" "-c" "wl-kbptr -o modes=floating,click -o mode_floating.source=detect"; }
 Mod+return repeat=false { spawn "fuzzel"; }
 Mod+s repeat=false { spawn "foot"; }
-//Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
+Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
 Mod+f repeat=false { spawn "helium-browser"; }
 Mod+x repeat=false { spawn "google-chrome-stable"; }
 Mod+z repeat=false { spawn "Telegram"; }
@@ -141,7 +141,7 @@ Mod+r { switch-preset-column-width; }
 Mod+Escape repeat=false { power-off-monitors; }
 Mod+a { fullscreen-window; }
     Mod+tab {
-        spawn "~/.local/bin/theme-toggle"
+        spawn "~/.config/niri/toggle-gtk.sh"
     }
 Mod+j  cooldown-ms=70   { focus-column-left; }
 Mod+L  cooldown-ms=70   { focus-column-right; }
