@@ -3,6 +3,7 @@ input {
     touchpad { tap; dwt; dwtp; natural-scroll; }
     focus-follows-mouse max-scroll-amount="0%"
     workspace-auto-back-and-forth
+    mouse { accel-speed 0.2; }
 }
 layout {
     preset-column-widths { proportion 0.382; proportion 0.618;proportion 1.0; }

@@ -56,7 +56,7 @@ function App() {
                                 searchCharacters();
                             }
                         }}
-                        placeholder="输入角色名，比如 初音未来"
+                        placeholder="输入角色名"
                     />
                     <button style={styles.button} onClick={searchCharacters}>
                         搜索
