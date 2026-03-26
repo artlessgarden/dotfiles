@@ -1,0 +1,10 @@
+[user]
+	name = less
+	email = less@less.com
+[init]
+	defaultBranch = main
+[color]
+	ui = auto
+[alias]
+	lg = log --oneline --graph --decorate
+

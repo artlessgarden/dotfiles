@@ -1,0 +1,90 @@
+input {
+    keyboard { repeat-delay 200; repeat-rate 30; }
+    touchpad { tap; dwt; dwtp; natural-scroll; }
+    focus-follows-mouse max-scroll-amount="0%"
+    workspace-auto-back-and-forth
+    mouse { accel-speed 0.2; }
+}
+layout {
+    preset-column-widths { proportion 0.382; proportion 0.618;proportion 1.0; }
+    default-column-width { proportion 0.618; }
+    background-color "transparent"
+    always-center-single-column
+    gaps 0
+    focus-ring {        off;}
+    shadow {
+        on
+        softness 30
+        spread 5
+        offset x=0 y=5
+        draw-behind-window true
+        color "#000000ff"
+        inactive-color "#00000054"
+    }
+}
+prefer-no-csd
+hotkey-overlay { skip-at-startup; }
+window-rule { open-floating false; }
+output "eDP-1" {  scale 1.75;    }
+gestures { hot-corners { off; };}
+//animations { off ;}
+
+spawn-at-startup "sh" "-c" "fcitx5 -d"
+spawn-at-startup "mouseless"
+spawn-at-startup "sh" "-c" "swayidle -w  timeout 180 'swaylock -f'  timeout 240 'niri msg action power-off-monitors'  resume 'niri msg action power-on-monitors'"
+spawn-at-startup "foot"
+
+binds {
+Mod+space repeat=false { spawn "sh" "-c" "wl-kbptr -o modes=floating,click -o mode_floating.source=detect"; }
+Mod+return repeat=false { spawn "fuzzel"; }
+Mod+tab { spawn "~/.config/niri/toggle-gtk.sh"; }
+Mod+Escape repeat=false { power-off-monitors; }
+
+Mod+a { fullscreen-window; }
+Mod+s repeat=false { spawn "foot"; }
+Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
+Mod+f repeat=false { spawn "helium-browser"; }
+
+Mod+z repeat=false { spawn "Telegram"; }
+Mod+x repeat=false { spawn "google-chrome-stable" "--profile-directory=Default"; }
+Mod+c repeat=false { spawn "google-chrome-stable" "--profile-directory=Profile 6"; }
+Mod+v repeat=false { toggle-overview; }
+
+Mod+p repeat=false { spawn "sh" "-c" "grim - | wl-copy --type image/png && wl-paste --type image/png | swappy -f -"; }
+Mod+q repeat=false { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy --type image/png && wl-paste --type image/png | swappy -f -"; }
+Mod+w repeat=false { close-window; }
+Mod+Shift+w { quit; }
+Mod+e { toggle-window-rule-opacity; }
+Mod+r { switch-preset-column-width; }
+
+
+Mod+j  cooldown-ms=70   { focus-column-left; }
+Mod+L  cooldown-ms=70   { focus-column-right; }
+Mod+i  cooldown-ms=70   { focus-window-or-workspace-up; }
+Mod+k  cooldown-ms=70  { focus-window-or-workspace-down; }
+Mod+Alt+j cooldown-ms=70    { move-column-left; }
+Mod+Alt+L cooldown-ms=70    { move-column-right; }
+Mod+Alt+k cooldown-ms=70 { move-window-down-or-to-workspace-down; }
+Mod+Alt+i cooldown-ms=70 { move-window-up-or-to-workspace-up; }
+
+Mod+Ctrl+k cooldown-ms=70 { move-column-to-workspace-down; }
+Mod+Ctrl+i cooldown-ms=70 { move-column-to-workspace-up; }
+
+Mod+u cooldown-ms=70 { consume-or-expel-window-left; }
+Mod+o cooldown-ms=70 { consume-or-expel-window-right; }
+//Mod+m {focus-monitor-next;}
+//Mod+alt+m {move-column-to-monitor-next;}
+
+Mod+t { spawn "sh" "-c" "brightnessctl s 5%+"; }
+Mod+g { spawn "sh" "-c" "brightnessctl s 5%-"; }
+Mod+h allow-when-locked=true { spawn "sh" "-c" "amixer set Master 1-"; }
+Mod+y allow-when-locked=true { spawn "sh" "-c" "amixer set Master 1+"; }
+
+Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
+Mod+MouseRight  { focus-column-right; }
+Mod+MouseLeft  { focus-column-left; }
+Mod+MouseForward cooldown-ms=70 { consume-or-expel-window-left; }
+Mod+MouseBack cooldown-ms=70 { consume-or-expel-window-right; }
+
+}
