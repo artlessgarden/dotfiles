@@ -1,39 +1,24 @@
-.bashrc
-.bash_profile
 
-.config/chromium-flags.conf
-.config/cmus
-.config/fcitx5
-.config/fd
-.config/fontconfig
-.config/foot
-.config/fuzzel
-.config/gtk-3.0
-.config/htop
 .config/keyd
-.config/mako
-.config/mouseless
-.config/niri
-.config/nvim
-.config/pipewire
-.config/surfingkeys.js
-.config/wl-kbptr
-.config/yazi
-.config/xdg-desktop-portal
-.config/xdg-desktop-portal-termfilechooser
-.config/systemd/user/caddy.service
-.config/systemd/user/dufs.service
-.config/systemd/user/vaultwarden.service
 
-Caddyfile
-.dotfiles-list
+.config/niri
+
+.config/foot
+
+.config/nvim
 
 .emacs.d/early-init.el
 .emacs.d/init.el
 .emacs.d/lisp
 
+.config/chromium-flags.conf
+.config/fontconfig
+.bashrc
+.bash_profile
 .gitconfig
 .inputrc
 .npmrc
+
+.dotfiles-list
 
 Drafts
