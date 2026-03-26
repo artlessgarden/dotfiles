@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-LANG=zh_CN.UTF-8 \
-google-chrome-stable --lang=zh-CN "$@"
