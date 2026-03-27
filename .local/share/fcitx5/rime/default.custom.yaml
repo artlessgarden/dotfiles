@@ -1,0 +1,5 @@
+patch:
+  schema_list:
+    - schema: yym
+    - schema: zrm
+    - schema: zrmm

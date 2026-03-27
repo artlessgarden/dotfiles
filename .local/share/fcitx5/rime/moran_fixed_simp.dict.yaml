@@ -1,0 +1,16 @@
+---
+name: moran
+version: "20260126"
+columns:
+  - text
+  - code
+encoder:
+  rules:
+    - length_equal: 2
+      formula: "AaAbBaBb"
+    - length_equal: 3
+      formula: "AaBaCa"
+    - length_in_range: [4, 32]
+      formula: "AaBaCaZa"
+...
+
