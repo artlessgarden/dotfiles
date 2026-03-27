@@ -19,6 +19,19 @@
 .inputrc
 .npmrc
 
+.local/share/fcitx5/rime/default.custom.yaml
+.local/share/fcitx5/rime/moran_defs.yaml
+.local/share/fcitx5/rime/moran_fixed.schema.yaml
+.local/share/fcitx5/rime/moran_fixed_simp.dict.yaml
+.local/share/fcitx5/rime/moran_fixed.symbols.dict.yaml
+.local/share/fcitx5/rime/yym.dict.yaml
+.local/share/fcitx5/rime/yym.schema.yaml
+.local/share/fcitx5/rime/zrm2000.jpg
+.local/share/fcitx5/rime/zrm.dict.yaml
+.local/share/fcitx5/rime/zrm.schema.yaml
+.local/share/fcitx5/rime/zrmm.dict.yaml
+.local/share/fcitx5/rime/zrmm.schema.yaml
+
 .dotfiles-list
 
 Drafts
