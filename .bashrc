@@ -14,7 +14,10 @@ function parse_git_branch() {
 }
 PS1='\n\[\e[38;5;223;48;5;238m\]\A \W\[\e[38;5;218m\]$(parse_git_branch)\[\e[0m\] '
 
-
+export WLR_NO_HARDWARE_CURSORS=1
+export __GL_GSYNC_ALLOWED=0
+export WLR_RENDERER=vulkan
+export __GL_VRR_ALLOWED=0
 ########################################################################################################
 # Use bash-completion, if available
 [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \

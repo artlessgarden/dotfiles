@@ -4,7 +4,7 @@ vim.g.mapleader = vim.keycode(" ")
 
 ------ Better default
 
---vim.opt.termguicolors = true
+vim.opt.termguicolors = true
 
 --vim.opt.path:append("**")
 --vim.opt.path = "**"
@@ -30,6 +30,7 @@ vim.o.hlsearch = true
 --vim.o.signcolumn = 'yes'
 vim.opt.autochdir = true
 vim.opt.shada = [['20,<50,s10,h]]
+vim.opt.clipboard = "unnamedplus"
 
 vim.o.grepprg = "rg --vimgrep"
 
@@ -39,9 +40,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		vim.fn.mkdir(dir, "p")
 	end,
 })
----- clipboard
-map({ "n", "x", "o" }, "<leader>y", '"+y', { desc = "Copy to clipboard" })
-map({ "n", "x", "o" }, "<leader>p", '"+p', { desc = "Paste clipboard text" })
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 	pattern = { "*" },
@@ -140,3 +138,42 @@ vim.keymap.set("n", "<leader>o", open_gdrive_web, { desc = "Open Google Drive we
 --------------------------------------
 
 require("config.lazy")
+
+
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = "server.tsv",
+  callback = function()
+    vim.opt_local.expandtab = false
+    vim.opt_local.tabstop = 16
+    vim.opt_local.wrap = false
+
+    vim.cmd("highlight G1 guifg=wheat")
+    vim.cmd("highlight G2 guifg=#ffd93d")
+    vim.cmd("highlight G3 guifg=#6bcB77")
+    vim.cmd("highlight G4 guifg=#4d96ff")
+    vim.cmd("highlight G5 guifg=pink")
+vim.fn.matchadd("G1", "^[^\t]*")
+vim.fn.matchadd("G2", "^\\([^\\t]*\\t\\)\\zs[^\\t]*")
+vim.fn.matchadd("G2", "^\\([^\\t]*\\t\\)\\{2}\\zs[^\\t]*")
+vim.fn.matchadd("G3", "^\\([^\\t]*\\t\\)\\{3}\\zs[^\\t]*")
+vim.fn.matchadd("G3", "^\\([^\\t]*\\t\\)\\{4}\\zs[^\\t]*")
+vim.fn.matchadd("G3", "^\\([^\\t]*\\t\\)\\{5}\\zs[^\\t]*")
+vim.fn.matchadd("G4", "^\\([^\\t]*\\t\\)\\{6}\\zs[^\\t]*")
+vim.fn.matchadd("G4", "^\\([^\\t]*\\t\\)\\{7}\\zs[^\\t]*")
+vim.fn.matchadd("G5", "^\\([^\\t]*\\t\\)\\{8}\\zs[^\\t]*")
+vim.fn.matchadd("G5", "^\\([^\\t]*\\t\\)\\{9}\\zs[^\\t]*")
+vim.fn.matchadd("G5", "^\\([^\\t]*\\t\\)\\{10}\\zs[^\\t]*")
+
+    vim.cmd("highlight MyP guifg=wheat")
+    vim.fn.matchadd("MyP", "P")
+
+vim.keymap.set("n", "<leader>c", function()
+  vim.cmd('normal! T\tv t\ty')
+end)
+
+    vim.opt_local.cursorline = true
+    vim.opt_local.cursorcolumn = true
+
+  end,
+})
+

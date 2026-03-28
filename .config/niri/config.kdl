@@ -25,14 +25,31 @@ layout {
 prefer-no-csd
 hotkey-overlay { skip-at-startup; }
 window-rule { open-floating false; }
-output "eDP-1" {  scale 1.75;    }
+output "eDP-1" {
+       scale 1.5
+       mode "2560x1600@60.003"
+}
+output "HDMI-A-1" {
+    focus-at-startup
+    mode "2560x1440@59.951"
+}
+
+// Put swaybg inside the overview backdrop.
+layer-rule {
+    match namespace="^wallpaper$"
+
+    place-within-backdrop true
+}
+
 gestures { hot-corners { off; };}
-//animations { off ;}
+animations { off ;}
 
 spawn-at-startup "sh" "-c" "fcitx5 -d"
+spawn-at-startup "sh" "-c" "swaybg -i .config/niri/bg2.jpg"
 spawn-at-startup "mouseless"
 spawn-at-startup "sh" "-c" "swayidle -w  timeout 180 'swaylock -f'  timeout 240 'niri msg action power-off-monitors'  resume 'niri msg action power-on-monitors'"
 spawn-at-startup "foot"
+spawn-at-startup "sh" "-c" "wlsunset -l 20 -L 100"
 
 binds {
 Mod+space repeat=false { spawn "sh" "-c" "wl-kbptr -o modes=floating,click -o mode_floating.source=detect"; }
@@ -40,22 +57,21 @@ Mod+return repeat=false { spawn "fuzzel"; }
 Mod+tab { spawn "~/.config/niri/toggle-gtk.sh"; }
 Mod+Escape repeat=false { power-off-monitors; }
 
-Mod+a { fullscreen-window; }
+Mod+a repeat=false { fullscreen-window; }
 Mod+s repeat=false { spawn "foot"; }
 Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
-Mod+f repeat=false { spawn "helium-browser"; }
+Mod+f repeat=false { spawn "firefox"; }
 
 Mod+z repeat=false { spawn "Telegram"; }
-Mod+x repeat=false { spawn "google-chrome-stable" "--profile-directory=Default"; }
-Mod+c repeat=false { spawn "google-chrome-stable" "--profile-directory=Profile 6"; }
+Mod+x repeat=false { spawn "google-chrome-stable"; }
 Mod+v repeat=false { toggle-overview; }
 
 Mod+p repeat=false { spawn "sh" "-c" "grim - | wl-copy --type image/png && wl-paste --type image/png | swappy -f -"; }
 Mod+q repeat=false { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy --type image/png && wl-paste --type image/png | swappy -f -"; }
 Mod+w repeat=false { close-window; }
-Mod+Shift+w { quit; }
+Mod+Shift+w repeat=false { quit; }
 Mod+e { toggle-window-rule-opacity; }
-Mod+r { switch-preset-column-width; }
+Mod+r repeat=false { switch-preset-column-width; }
 
 
 Mod+j  cooldown-ms=70   { focus-column-left; }
@@ -72,15 +88,15 @@ Mod+Ctrl+i cooldown-ms=70 { move-column-to-workspace-up; }
 
 Mod+u cooldown-ms=70 { consume-or-expel-window-left; }
 Mod+o cooldown-ms=70 { consume-or-expel-window-right; }
-//Mod+m {focus-monitor-next;}
-//Mod+alt+m {move-column-to-monitor-next;}
+Mod+m {focus-monitor-next;}
+Mod+alt+m {move-column-to-monitor-next;}
 
 Mod+t { spawn "sh" "-c" "brightnessctl s 5%+"; }
 Mod+g { spawn "sh" "-c" "brightnessctl s 5%-"; }
 Mod+h allow-when-locked=true { spawn "sh" "-c" "amixer set Master 1-"; }
 Mod+y allow-when-locked=true { spawn "sh" "-c" "amixer set Master 1+"; }
 
-Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+Mod+WheelScrollDown cooldown-ms=149 { focus-workspace-down; }
 Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
 Mod+MouseRight  { focus-column-right; }
 Mod+MouseLeft  { focus-column-left; }
@@ -88,3 +104,4 @@ Mod+MouseForward cooldown-ms=70 { consume-or-expel-window-left; }
 Mod+MouseBack cooldown-ms=70 { consume-or-expel-window-right; }
 
 }
+
