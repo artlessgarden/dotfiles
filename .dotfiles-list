@@ -7,6 +7,12 @@
 
 .config/nvim
 
+.config/mouseless
+
+.config/xdg-desktop-portal
+.config/xdg-desktop-portal-termfilechooser
+.config/surfingkeys.js
+
 .emacs.d/early-init.el
 .emacs.d/init.el
 .emacs.d/lisp
