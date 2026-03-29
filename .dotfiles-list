@@ -6,6 +6,10 @@
 .config/foot
 
 .config/nvim
+.config/yazi
+.config/fcitx5
+
+.config/wl-kbptr
 
 .config/mouseless
 
