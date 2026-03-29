@@ -46,6 +46,7 @@ animations { off ;}
 
 spawn-at-startup "sh" "-c" "fcitx5 -d"
 spawn-at-startup "sh" "-c" "swaybg -i .config/niri/bg2.jpg"
+spawn-at-startup "sh" "-c" "dufs -A"
 spawn-at-startup "mouseless"
 spawn-at-startup "sh" "-c" "swayidle -w  timeout 180 'swaylock -f'  timeout 240 'niri msg action power-off-monitors'  resume 'niri msg action power-on-monitors'"
 spawn-at-startup "foot"
@@ -62,6 +63,7 @@ Mod+s repeat=false { spawn "foot"; }
 //Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
 Mod+d repeat=false { spawn "sh" "-c" "foot -e nvim ."; }
 Mod+f repeat=false { spawn "firefox"; }
+Mod+c repeat=false { spawn "helium-browser"; }
 
 Mod+z repeat=false { spawn "Telegram"; }
 Mod+x repeat=false { spawn "google-chrome-stable"; }
