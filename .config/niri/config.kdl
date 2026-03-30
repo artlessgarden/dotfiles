@@ -60,8 +60,8 @@ Mod+Escape repeat=false { power-off-monitors; }
 
 Mod+a repeat=false { fullscreen-window; }
 Mod+s repeat=false { spawn "foot"; }
-//Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
-Mod+d repeat=false { spawn "sh" "-c" "foot -e nvim ."; }
+Mod+d repeat=false { spawn "sh" "-c" "emacsclient -c -a ''"; }
+//Mod+d repeat=false { spawn "sh" "-c" "foot -e nvim ."; }
 Mod+f repeat=false { spawn "firefox"; }
 Mod+c repeat=false { spawn "helium-browser"; }
 
